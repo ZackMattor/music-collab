@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import { ApiResponse } from '../types/index';
 
 export const createSuccessResponse = <T>(
@@ -15,7 +16,7 @@ export const createSuccessResponse = <T>(
 export const createErrorResponse = (
   message: string,
   code?: string,
-  details?: any
+  details?: Record<string, unknown>
 ): ApiResponse => ({
   success: false,
   error: {
@@ -28,7 +29,9 @@ export const createErrorResponse = (
   },
 });
 
-export const asyncHandler = (fn: Function) => (req: any, res: any, next: any) => {
+// Higher-order function that wraps async route handlers to catch errors
+// The parameters are used by the function passed to asyncHandler
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => (req: Request, res: Response, next: NextFunction): void => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 

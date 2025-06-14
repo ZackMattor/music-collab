@@ -11,7 +11,7 @@ interface DocFile {
   slug: string
   category: string
   content: string
-  frontmatter: Record<string, any>
+  frontmatter: Record<string, unknown>
   lastModified: Date
 }
 
@@ -22,7 +22,7 @@ interface DocIndex {
 
 async function createMarkdownProcessor(): Promise<MarkdownIt> {
   // Initialize Shiki highlighter
-  let highlighter: any = null
+  let highlighter: Awaited<ReturnType<typeof createHighlighter>> | null = null
   
   try {
     highlighter = await createHighlighter({

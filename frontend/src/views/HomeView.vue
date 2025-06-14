@@ -80,10 +80,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
 const getStarted = () => {
   // TODO: Navigate to signup/login when authentication is implemented
   console.log('Get Started clicked - Authentication coming soon!')

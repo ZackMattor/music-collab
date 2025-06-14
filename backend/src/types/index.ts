@@ -1,10 +1,10 @@
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: {
     message: string;
     code?: string;
-    details?: any;
+    details?: Record<string, unknown>;
   };
   meta?: {
     pagination?: {
@@ -84,7 +84,7 @@ export interface Track {
 export interface TrackEffect {
   id: string;
   type: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   isEnabled: boolean;
   order: number;
 }

@@ -83,14 +83,14 @@ class ApiClient {
     return this.request<T>(endpoint, { method: 'GET' })
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
     })
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
@@ -107,7 +107,7 @@ const apiClient = new ApiClient(API_BASE_URL, API_TIMEOUT)
 
 // API Services
 export const authApi = {
-  async login(credentials: LoginCredentials): Promise<ApiResponse<{ user: User; tokens: any }>> {
+  async login(credentials: LoginCredentials): Promise<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>> {
     // TODO: Replace with actual API call when backend authentication is implemented
     console.log('Mock login API call:', credentials)
     await new Promise(resolve => setTimeout(resolve, 1000))
@@ -139,7 +139,7 @@ export const authApi = {
     }
   },
 
-  async register(data: RegisterData): Promise<ApiResponse<{ user: User; tokens: any }>> {
+  async register(data: RegisterData): Promise<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>> {
     // TODO: Replace with actual API call when backend authentication is implemented
     console.log('Mock register API call:', data)
     await new Promise(resolve => setTimeout(resolve, 1000))
@@ -176,9 +176,9 @@ export const authApi = {
     return apiClient.get<User>('/auth/me')
   },
 
-  async refreshToken(): Promise<ApiResponse<any>> {
+  async refreshToken(): Promise<ApiResponse<{ accessToken: string; refreshToken: string }>> {
     // TODO: Replace with actual API call
-    return apiClient.post<any>('/auth/refresh')
+    return apiClient.post<{ accessToken: string; refreshToken: string }>('/auth/refresh')
   }
 }
 

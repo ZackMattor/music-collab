@@ -18,6 +18,8 @@ export default defineConfigWithVueTs(
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
+  // ESLint flat config type compatibility requires 'any' for plugin configurations
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pluginVue.configs['flat/essential'] as any,
   vueTsConfigs.recommended,
   
@@ -25,5 +27,7 @@ export default defineConfigWithVueTs(
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
   },
+  // ESLint flat config type compatibility requires 'any' for skipFormatting
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   skipFormatting as any,
 )

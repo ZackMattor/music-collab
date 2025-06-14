@@ -1,15 +1,15 @@
 import { ref, type Ref } from 'vue'
 import type { ApiResponse } from '@/types'
 
-interface UseApiOptions {
+interface UseApiOptions<T = unknown> {
   immediate?: boolean
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: T) => void
+  onError?: (error: unknown) => void
 }
 
 export function useApi<T>(
   apiCall: () => Promise<ApiResponse<T>>,
-  options: UseApiOptions = {}
+  options: UseApiOptions<T> = {}
 ) {
   const { immediate = false, onSuccess, onError } = options
 
