@@ -130,3 +130,27 @@ export interface AppConfig {
     audioRecording: boolean
   }
 }
+
+// Documentation Types
+export interface DocFile {
+  path: string
+  title: string
+  slug: string
+  category: string
+  content: string
+  frontmatter: Record<string, any>
+  lastModified: Date
+}
+
+export interface DocIndex {
+  files: DocFile[]
+  categories: string[]
+}
+
+export interface DocSearchResult {
+  file: DocFile
+  matches: Array<{
+    text: string
+    highlight: string
+  }>
+}

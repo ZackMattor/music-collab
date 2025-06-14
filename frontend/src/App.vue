@@ -13,6 +13,7 @@
         <div class="nav-links">
           <RouterLink to="/" class="nav-link">Home</RouterLink>
           <RouterLink to="/about" class="nav-link">About</RouterLink>
+          <RouterLink to="/docs" class="nav-link">Documentation</RouterLink>
           <!-- TODO: Add authentication links when auth is implemented -->
           <div class="auth-links">
             <button class="btn btn-outline" @click="handleLogin">Login</button>
@@ -30,6 +31,7 @@
       <div class="mobile-menu" :class="{ 'active': mobileMenuOpen }">
         <RouterLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Home</RouterLink>
         <RouterLink to="/about" class="mobile-nav-link" @click="closeMobileMenu">About</RouterLink>
+        <RouterLink to="/docs" class="mobile-nav-link" @click="closeMobileMenu">Documentation</RouterLink>
         <div class="mobile-auth-links">
           <button class="btn btn-outline mobile-btn" @click="handleLogin">Login</button>
           <button class="btn btn-primary mobile-btn" @click="handleSignup">Sign Up</button>
