@@ -146,6 +146,10 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
+          e2e-tests/package-lock.json
     
     - name: Install dependencies
       run: |
@@ -187,6 +191,9 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
     
     - name: Install and build backend
       run: |
