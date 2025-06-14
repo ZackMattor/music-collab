@@ -51,6 +51,26 @@ The development environment includes the following services:
 | pgAdmin | http://localhost:5050 | Database management | `admin@example.com` / `admin_password` |
 | Redis Commander | http://localhost:8081 | Redis management | `admin` / `admin_password` |
 
+#### pgAdmin Setup
+
+After starting the development environment, you'll need to add the PostgreSQL server to pgAdmin manually:
+
+1. Open pgAdmin at http://localhost:5050
+2. Login with `admin@example.com` / `admin_password`
+3. Right-click "Servers" and select "Register" > "Server..."
+4. Configure the connection:
+   - **General Tab:**
+     - Name: `Music Collab Development`
+   - **Connection Tab:**
+     - Host name/address: `postgres`
+     - Port: `5432`
+     - Maintenance database: `music_collab_dev`
+     - Username: `dev_user`
+     - Password: `dev_password`
+5. Click "Save" to add the server
+
+The server will then appear in the left sidebar for database management.
+
 ### Development Environment Management
 
 Use the provided script to manage your development environment:
@@ -74,6 +94,68 @@ Use the provided script to manage your development environment:
 # Check service status
 ./dev-tools/dev-env.sh status
 ```
+
+### Backend Development
+
+The backend is built with Node.js, TypeScript, and Express.js. It provides a REST API for the music collaboration platform.
+
+**Directory Structure:**
+```
+backend/
+├── src/
+│   ├── app.ts              # Express application setup
+│   ├── index.ts            # Application entry point
+│   ├── config/             # Configuration management
+│   ├── controllers/        # Request handlers
+│   ├── middleware/         # Express middleware
+│   ├── models/             # Data models
+│   ├── routes/             # API route definitions
+│   ├── services/           # Business logic
+│   ├── types/              # TypeScript type definitions
+│   ├── utils/              # Utility functions
+│   └── __tests__/          # Test files
+├── dist/                   # Compiled JavaScript (auto-generated)
+├── package.json            # Node.js dependencies and scripts
+├── tsconfig.json          # TypeScript configuration
+└── .env                   # Environment variables
+```
+
+**Development Commands:**
+```bash
+cd backend
+
+# Install dependencies
+npm install
+
+# Start development server (with auto-reload)
+npm run dev
+
+# Build TypeScript to JavaScript
+npm run build
+
+# Run tests
+npm test
+
+# Run linting
+npm run lint
+
+# Format code
+npm run format
+
+# Type checking
+npm run typecheck
+```
+
+**Available Endpoints:**
+- `GET /health` - Health check endpoint
+- `GET /api` - API information and available endpoints
+- `GET /api/auth` - Authentication endpoints (placeholder)
+- `GET /api/users` - User management endpoints (placeholder)
+- `GET /api/projects` - Project management endpoints (placeholder)
+- `GET /api/tracks` - Track management endpoints (placeholder)
+- `GET /api/collaborations` - Collaboration endpoints (placeholder)
+
+The backend server runs on `http://localhost:3000` by default.
 
 ### Project Structure
 
@@ -105,9 +187,12 @@ We're currently in Phase 1.1 of the project plan, setting up the development env
 - ✅ Environment variable templates
 - ✅ Development environment management scripts
 - ✅ Basic project documentation
+- ✅ Backend TypeScript project scaffolding
+- ✅ Express.js application structure with health check
+- ✅ TypeScript build pipeline and linting setup
+- ✅ Basic API routes and error handling
 
 **Next Steps:**
-- [ ] Backend TypeScript project initialization
 - [ ] Frontend Vue.js project initialization
 - [ ] Testing infrastructure setup
 - [ ] CI/CD pipeline configuration
