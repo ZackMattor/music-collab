@@ -1,0 +1,258 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  username    String   @unique
+  displayName String
+  avatar      String?
+  passwordHash String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // User preferences
+  defaultTempo                 Int     @default(120)
+  collaborationNotifications   Boolean @default(true)
+
+  // Relationships
+  ownedProjects       Project[]
+  collaboratingProjects ProjectCollaborator[]
+  modifiedStems       Stem[]     @relation("StemModifier")
+  modifiedSegments    StemSegment[] @relation("SegmentModifier")
+  sessionParticipants SessionParticipant[]
+  sessionChanges      SessionChange[]
+
+  @@map("users")
+}
+
+// Project Model
+model Project {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  ownerId        String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lastAccessedAt DateTime @default(now())
+
+  // Music metadata
+  tempo          Int      @default(120) // BPM
+  timeSignatureNumerator   Int @default(4)
+  timeSignatureDenominator Int @default(4)
+  length         Int      @default(0) // Total length in milliseconds
+
+  // Project state
+  isActive       Boolean  @default(true)
+  isPublic       Boolean  @default(false)
+
+  // Synchronization metadata
+  version        Int      @default(1)
+  lastSyncAt     DateTime @default(now())
+
+  // Relationships
+  owner          User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  collaborators  ProjectCollaborator[]
+  stems          Stem[]
+  sessions       CollaborationSession[]
+
+  @@map("projects")
+}
+
+// ProjectCollaborator Model
+model ProjectCollaborator {
+  id           String   @id @default(cuid())
+  projectId    String
+  userId       String
+  role         Role     @default(CONTRIBUTOR)
+  joinedAt     DateTime @default(now())
+  lastActiveAt DateTime @default(now())
+
+  // Permissions
+  canEdit         Boolean @default(true)
+  canAddStems     Boolean @default(true)
+  canDeleteStems  Boolean @default(false)
+  canInviteOthers Boolean @default(false)
+  canExport       Boolean @default(true)
+
+  // Real-time status
+  isOnline        Boolean @default(false)
+  currentActivity Activity?
+
+  // Relationships
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("project_collaborators")
+}
+
+// Stem Model
+model Stem {
+  id            String   @id @default(cuid())
+  projectId     String
+  name          String
+  color         String   @default("#3B82F6") // Hex color for UI
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Audio properties
+  volume        Float    @default(1.0) // 0.0 to 1.0
+  pan           Float    @default(0.0) // -1.0 (left) to 1.0 (right)
+  isMuted       Boolean  @default(false)
+  isSoloed      Boolean  @default(false)
+
+  // Stem metadata
+  instrumentType String?  // 'drums', 'bass', 'piano', etc.
+  midiChannel    Int?     // For MIDI stems
+
+  // Ordering
+  order         Int      @default(0) // Display order in DAW
+
+  // Synchronization
+  version       Int      @default(1)
+  lastModifiedBy String
+
+  // Relationships
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  segments      StemSegment[]
+  modifier      User     @relation("StemModifier", fields: [lastModifiedBy], references: [id])
+
+  @@map("stems")
+}
+
+// StemSegment Model
+model StemSegment {
+  id           String      @id @default(cuid())
+  stemId       String
+  type         SegmentType
+  name         String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Timing (in milliseconds from project start)
+  startTime    Int
+  endTime      Int
+
+  // Content data (stored as JSON)
+  content      Json
+
+  // Processing
+  volume       Float       @default(1.0) // Segment-specific volume
+  fadeIn       Int?        // Fade in duration in ms
+  fadeOut      Int?        // Fade out duration in ms
+
+  // Synchronization
+  version      Int         @default(1)
+  lastModifiedBy String
+
+  // AI metadata (if AI-generated)
+  aiPrompt     String?
+  aiModel      String?
+  aiGeneratedAt DateTime?
+  aiParameters Json?
+
+  // Relationships
+  stem         Stem        @relation(fields: [stemId], references: [id], onDelete: Cascade)
+  modifier     User        @relation("SegmentModifier", fields: [lastModifiedBy], references: [id])
+
+  @@map("stem_segments")
+}
+
+// CollaborationSession Model
+model CollaborationSession {
+  id        String   @id @default(cuid())
+  projectId String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  // Playback synchronization
+  isPlaying        Boolean  @default(false)
+  currentTime      Int      @default(0) // milliseconds
+  tempo            Int      @default(120)
+  lastUpdatedAt    DateTime @default(now())
+  lastUpdatedBy    String?
+
+  // Relationships
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  participants SessionParticipant[]
+  changes      SessionChange[]
+
+  @@map("collaboration_sessions")
+}
+
+// SessionParticipant Model
+model SessionParticipant {
+  id        String   @id @default(cuid())
+  sessionId String
+  userId    String
+  socketId  String
+  joinedAt  DateTime @default(now())
+  lastActiveAt DateTime @default(now())
+  role      String
+
+  // Current state
+  isListening   Boolean @default(true)
+  currentCursor Int?    // Current playback position they're viewing
+
+  // Relationships
+  session CollaborationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+  @@map("session_participants")
+}
+
+// SessionChange Model
+model SessionChange {
+  id         String     @id @default(cuid())
+  sessionId  String
+  userId     String
+  timestamp  DateTime   @default(now())
+  changeType ChangeType
+  entityId   String     // ID of changed entity
+  changes    Json       // The actual changes
+  version    Int        // Version after this change
+
+  // Relationships
+  session CollaborationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session_changes")
+}
+
+// Enums
+enum Role {
+  VIEWER
+  CONTRIBUTOR
+  ADMIN
+}
+
+enum Activity {
+  EDITING
+  LISTENING
+  IDLE
+}
+
+enum SegmentType {
+  MIDI
+  AUDIO
+}
+
+enum ChangeType {
+  STEM_UPDATE
+  SEGMENT_CREATE
+  SEGMENT_UPDATE
+  SEGMENT_DELETE
+  PLAYBACK_SYNC
+}
