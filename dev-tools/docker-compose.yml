@@ -34,7 +34,7 @@ services:
     container_name: music-collab-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@musiccollab.local
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin_password
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:

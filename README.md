@@ -48,7 +48,7 @@ The development environment includes the following services:
 |---------|-----|---------|-------------|
 | PostgreSQL | `localhost:5432` | Primary database | `dev_user` / `dev_password` |
 | Redis | `localhost:6379` | Caching & sessions | Password: `dev_redis_password` |
-| pgAdmin | http://localhost:5050 | Database management | `admin@musiccollab.local` / `admin_password` |
+| pgAdmin | http://localhost:5050 | Database management | `admin@example.com` / `admin_password` |
 | Redis Commander | http://localhost:8081 | Redis management | `admin` / `admin_password` |
 
 ### Development Environment Management
