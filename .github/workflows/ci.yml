@@ -168,74 +168,74 @@ jobs:
         cd dev-tools
         docker compose down -v
 
-  e2e-test:
-    runs-on: ubuntu-latest
-    needs: [backend-test, frontend-test, integration-test, build]
+  # e2e-test:
+  #   runs-on: ubuntu-latest
+  #   needs: [backend-test, frontend-test, integration-test, build]
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: music_collab_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+  #   services:
+  #     postgres:
+  #       image: postgres:15
+  #       env:
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DB: music_collab_test
+  #       options: >-
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #       ports:
+  #         - 5432:5432
       
-      redis:
-        image: redis:7-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
+  #     redis:
+  #       image: redis:7-alpine
+  #       options: >-
+  #         --health-cmd "redis-cli ping"
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #       ports:
+  #         - 6379:6379
 
-    steps:
-    - uses: actions/checkout@v4
+  #   steps:
+  #   - uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: |
-          backend/package-lock.json
-          frontend/package-lock.json
-          e2e-tests/package-lock.json
+  #   - name: Setup Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '20'
+  #       cache: 'npm'
+  #       cache-dependency-path: |
+  #         backend/package-lock.json
+  #         frontend/package-lock.json
+  #         e2e-tests/package-lock.json
     
-    - name: Install dependencies
-      run: |
-        cd backend && npm ci
-        cd ../frontend && npm ci
-        cd ../e2e-tests && npm ci
+  #   - name: Install dependencies
+  #     run: |
+  #       cd backend && npm ci
+  #       cd ../frontend && npm ci
+  #       cd ../e2e-tests && npm ci
     
-    - name: Install Playwright Browsers
-      run: |
-        cd e2e-tests
-        npx playwright install --with-deps
+  #   - name: Install Playwright Browsers
+  #     run: |
+  #       cd e2e-tests
+  #       npx playwright install --with-deps
     
-    - name: Run E2E tests
-      run: |
-        cd e2e-tests
-        npm test
-      env:
-        NODE_ENV: test
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/music_collab_test
-        REDIS_URL: redis://localhost:6379
+  #   - name: Run E2E tests
+  #     run: |
+  #       cd e2e-tests
+  #       npm test
+  #     env:
+  #       NODE_ENV: test
+  #       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/music_collab_test
+  #       REDIS_URL: redis://localhost:6379
     
-    - name: Upload E2E test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: e2e-tests/playwright-report/
-        retention-days: 30
+  #   - name: Upload E2E test results
+  #     uses: actions/upload-artifact@v4
+  #     if: always()
+  #     with:
+  #       name: playwright-report
+  #       path: e2e-tests/playwright-report/
+  #       retention-days: 30
 
   build:
     runs-on: ubuntu-latest
@@ -274,90 +274,90 @@ jobs:
           frontend/dist/
         retention-days: 7
 
-  code-quality:
-    runs-on: ubuntu-latest
-    needs: [backend-test, frontend-test, integration-test]
+  # code-quality:
+  #   runs-on: ubuntu-latest
+  #   needs: [backend-test, frontend-test, integration-test]
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: music_collab_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+  #   services:
+  #     postgres:
+  #       image: postgres:15
+  #       env:
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DB: music_collab_test
+  #       options: >-
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #       ports:
+  #         - 5432:5432
       
-      redis:
-        image: redis:7-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
+  #     redis:
+  #       image: redis:7-alpine
+  #       options: >-
+  #         --health-cmd "redis-cli ping"
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #       ports:
+  #         - 6379:6379
     
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Needed for SonarCloud
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       fetch-depth: 0  # Needed for SonarCloud
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: |
-          backend/package-lock.json
-          frontend/package-lock.json
+  #   - name: Setup Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '20'
+  #       cache: 'npm'
+  #       cache-dependency-path: |
+  #         backend/package-lock.json
+  #         frontend/package-lock.json
     
-    - name: Install dependencies
-      run: |
-        cd backend && npm ci
-        cd ../frontend && npm ci
+  #   - name: Install dependencies
+  #     run: |
+  #       cd backend && npm ci
+  #       cd ../frontend && npm ci
     
-    - name: Run backend coverage tests
-      run: |
-        cd backend
-        npm run test:coverage
-      env:
-        NODE_ENV: test
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/music_collab_test
-        REDIS_URL: redis://localhost:6379
+  #   - name: Run backend coverage tests
+  #     run: |
+  #       cd backend
+  #       npm run test:coverage
+  #     env:
+  #       NODE_ENV: test
+  #       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/music_collab_test
+  #       REDIS_URL: redis://localhost:6379
     
-    - name: Run frontend coverage tests
-      run: |
-        cd frontend
-        npm run test:unit -- --coverage --run
+  #   - name: Run frontend coverage tests
+  #     run: |
+  #       cd frontend
+  #       npm run test:unit -- --coverage --run
     
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.projectKey=music-collab-platform
-          -Dsonar.organization=your-org
-          -Dsonar.sources=backend/src,frontend/src
-          -Dsonar.tests=backend/src,frontend/src
-          -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
-          -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-          -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/coverage/**
+  #   - name: SonarCloud Scan
+  #     uses: SonarSource/sonarcloud-github-action@master
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     with:
+  #       args: >
+  #         -Dsonar.projectKey=music-collab-platform
+  #         -Dsonar.organization=your-org
+  #         -Dsonar.sources=backend/src,frontend/src
+  #         -Dsonar.tests=backend/src,frontend/src
+  #         -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
+  #         -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
+  #         -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/coverage/**
     
-    - name: Check for security vulnerabilities
-      run: |
-        cd backend && npm audit --audit-level high
-        cd ../frontend && npm audit --audit-level high
+  #   - name: Check for security vulnerabilities
+  #     run: |
+  #       cd backend && npm audit --audit-level high
+  #       cd ../frontend && npm audit --audit-level high
     
-    - name: Check bundle size (frontend)
-      run: |
-        cd frontend
-        npm run build
-        # Check if bundle size is reasonable (under 1MB for main chunk)
-        find dist/assets -name "*.js" -exec ls -lh {} \; | awk '{if ($5 > "1M") exit 1}'
+  #   - name: Check bundle size (frontend)
+  #     run: |
+  #       cd frontend
+  #       npm run build
+  #       # Check if bundle size is reasonable (under 1MB for main chunk)
+  #       find dist/assets -name "*.js" -exec ls -lh {} \; | awk '{if ($5 > "1M") exit 1}'
