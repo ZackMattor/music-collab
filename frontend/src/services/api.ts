@@ -1,5 +1,37 @@
 import type { ApiResponse, LoginCredentials, RegisterData, User, Project } from '@/types'
 
+// Backend user interface for API responses
+interface BackendUser {
+  id: string;
+  email: string;
+  displayName?: string | null;
+  avatar?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  bio?: string | null;
+  skillLevel?: string | null;
+  genres?: string[];
+  instruments?: string[];
+  defaultTempo?: number;
+  collaborationNotifications?: boolean;
+}
+
+// Transform backend user to frontend user format
+const transformBackendUser = (backendUser: BackendUser): User => ({
+  id: backendUser.id,
+  email: backendUser.email,
+  displayName: backendUser.displayName ?? undefined,
+  avatar: backendUser.avatar ?? undefined,
+  bio: backendUser.bio ?? undefined,
+  musicalPreferences: {
+    genres: backendUser.genres || [],
+    instruments: backendUser.instruments || [],
+    skillLevel: (backendUser.skillLevel as 'beginner' | 'intermediate' | 'advanced' | 'professional') || 'beginner'
+  },
+  createdAt: new Date(backendUser.createdAt),
+  updatedAt: new Date(backendUser.updatedAt)
+})
+
 // Configuration
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1'
 const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '10000')
@@ -201,40 +233,10 @@ export const tokenManager = {
 // API Services
 export const authApi = {
   async login(credentials: LoginCredentials): Promise<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>> {
-    interface BackendUser {
-      id: string;
-      email: string;
-      displayName?: string | null;
-      avatar?: string | null;
-      createdAt: string;
-      updatedAt: string;
-      bio?: string | null;
-      skillLevel?: string | null;
-      genres?: string[];
-      instruments?: string[];
-      defaultTempo?: number;
-      collaborationNotifications?: boolean;
-    }
-    
     const response = await apiClient.post<{ user: BackendUser; tokens: { accessToken: string; refreshToken: string } }>('/auth/login', credentials)
     
     if (response.success && response.data) {
-      // Transform backend user format to frontend User interface
-      const backendUser = response.data.user
-      const user: User = {
-        id: backendUser.id,
-        email: backendUser.email,
-        displayName: backendUser.displayName,
-        avatar: backendUser.avatar,
-        musicalPreferences: {
-          genres: [],
-          instruments: [],
-          skillLevel: 'beginner' // Default skill level
-        },
-        createdAt: new Date(backendUser.createdAt),
-        updatedAt: new Date(backendUser.updatedAt)
-      }
-
+      const user = transformBackendUser(response.data.user)
       return {
         ...response,
         data: {
@@ -244,44 +246,18 @@ export const authApi = {
       }
     }
     
-    return response as ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>
+    return {
+      success: false,
+      error: response.error || { message: 'Login failed' },
+      meta: response.meta || { timestamp: new Date().toISOString() }
+    }
   },
 
-  async register(data: RegisterData): Promise<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>> {
-    interface BackendUser {
-      id: string;
-      email: string;
-      displayName?: string | null;
-      avatar?: string | null;
-      createdAt: string;
-      updatedAt: string;
-      bio?: string | null;
-      skillLevel?: string | null;
-      genres?: string[];
-      instruments?: string[];
-      defaultTempo?: number;
-      collaborationNotifications?: boolean;
-    }
-    
+  async register(data: RegisterData): Promise<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>> {    
     const response = await apiClient.post<{ user: BackendUser; tokens: { accessToken: string; refreshToken: string } }>('/auth/register', data)
     
     if (response.success && response.data) {
-      // Transform backend user format to frontend User interface
-      const backendUser = response.data.user
-      const user: User = {
-        id: backendUser.id,
-        email: backendUser.email,
-        displayName: backendUser.displayName,
-        avatar: backendUser.avatar,
-        musicalPreferences: {
-          genres: [],
-          instruments: [],
-          skillLevel: 'beginner' // Default skill level
-        },
-        createdAt: new Date(backendUser.createdAt),
-        updatedAt: new Date(backendUser.updatedAt)
-      }
-
+      const user = transformBackendUser(response.data.user)
       return {
         ...response,
         data: {
@@ -291,51 +267,29 @@ export const authApi = {
       }
     }
     
-    return response as ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string } }>
+    return {
+      success: false,
+      error: response.error || { message: 'Registration failed' },
+      meta: response.meta || { timestamp: new Date().toISOString() }
+    }
   },
 
-  async getCurrentUser(): Promise<ApiResponse<User>> {
-    interface BackendUser {
-      id: string;
-      email: string;
-      displayName?: string | null;
-      avatar?: string | null;
-      createdAt: string;
-      updatedAt: string;
-      bio?: string | null;
-      skillLevel?: string | null;
-      genres?: string[];
-      instruments?: string[];
-      defaultTempo?: number;
-      collaborationNotifications?: boolean;
-    }
-    
+  async getCurrentUser(): Promise<ApiResponse<User>> {    
     const response = await apiClient.get<{ user: BackendUser }>('/auth/profile')
     
     if (response.success && response.data?.user) {
-      // Transform backend user format to frontend User interface
-      const backendUser = response.data.user
-      const user: User = {
-        id: backendUser.id,
-        email: backendUser.email,
-        displayName: backendUser.displayName,
-        avatar: backendUser.avatar,
-        musicalPreferences: {
-          genres: [],
-          instruments: [],
-          skillLevel: 'beginner' // Default skill level
-        },
-        createdAt: new Date(backendUser.createdAt),
-        updatedAt: new Date(backendUser.updatedAt)
-      }
-
+      const user = transformBackendUser(response.data.user)
       return {
         ...response,
         data: user
       }
     }
     
-    return response as ApiResponse<User>
+    return {
+      success: false,
+      error: response.error || { message: 'Failed to get current user' },
+      meta: response.meta || { timestamp: new Date().toISOString() }
+    }
   },
 
   async refreshToken(): Promise<ApiResponse<{ accessToken: string; refreshToken: string }>> {
