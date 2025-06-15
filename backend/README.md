@@ -44,21 +44,21 @@ src/
 - `GET /health` - Health check endpoint
 - `GET /api` - API information and available endpoints
 
-### Authentication (Coming Soon)
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Token refresh
-- `POST /api/auth/logout` - User logout
+### Authentication
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/refresh` - Token refresh
+- `POST /api/v1/auth/logout` - User logout
 
 ### User Management (Coming Soon)
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
-- `GET /api/users/preferences` - Get user preferences
-- `PUT /api/users/preferences` - Update preferences
+- `GET /api/v1/users/profile` - Get user profile
+- `PUT /api/v1/users/profile` - Update user profile
+- `GET /api/v1/users/preferences` - Get user preferences
+- `PUT /api/v1/users/preferences` - Update preferences
 
 ### Project Management (Coming Soon)
-- `GET /api/projects` - List user's projects
-- `POST /api/projects` - Create new project
+- `GET /api/v1/projects` - List user's projects
+- `POST /api/v1/projects` - Create new project
 - `GET /api/projects/:id` - Get project details
 - `PUT /api/projects/:id` - Update project
 - `DELETE /api/projects/:id` - Delete project

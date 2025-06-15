@@ -22,12 +22,12 @@
 - **Authorization Framework**: Project permission middleware foundation
 
 ### API Endpoints Implemented
-- `POST /api/auth/register` - User registration with validation
-- `POST /api/auth/login` - User authentication
-- `POST /api/auth/refresh` - Token refresh
-- `GET /api/auth/profile` - Protected user profile (requires auth)
-- `POST /api/auth/logout` - Client-side logout
-- `POST /api/auth/validate` - Token validation
+- `POST /api/v1/auth/register` - User registration with validation
+- `POST /api/v1/auth/login` - User authentication
+- `POST /api/v1/auth/refresh` - Token refresh
+- `GET /api/v1/auth/profile` - Protected user profile (requires auth)
+- `POST /api/v1/auth/logout` - Client-side logout
+- `POST /api/v1/auth/validate` - Token validation
 
 ## 📊 Test Results
 ```
@@ -111,7 +111,7 @@ AuthController
 ### Example API Flow
 ```bash
 # 1. Register new user
-POST /api/auth/register
+POST /api/v1/auth/register
 {
   "email": "test@example.com",
   "username": "testuser", 
@@ -121,7 +121,7 @@ POST /api/auth/register
 # Response: User object + JWT tokens
 
 # 2. Login existing user  
-POST /api/auth/login
+POST /api/v1/auth/login
 {
   "email": "test@example.com",
   "password": "securepassword123" 
@@ -129,7 +129,7 @@ POST /api/auth/login
 # Response: User object + JWT tokens
 
 # 3. Access protected resource
-GET /api/auth/profile
+GET /api/v1/auth/profile
 Authorization: Bearer <access_token>
 # Response: User profile data
 ```

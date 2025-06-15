@@ -13,11 +13,11 @@ export function createApiRoutes(prisma: PrismaClient): Router {
       status: 'operational',
       endpoints: {
         health: '/health',
-        auth: '/api/auth',
-        users: '/api/users',
-        projects: '/api/projects',
-        tracks: '/api/tracks',
-        collaborations: '/api/collaborations',
+        auth: '/api/v1/auth',
+        users: '/api/v1/users',
+        projects: '/api/v1/projects',
+        tracks: '/api/v1/tracks',
+        collaborations: '/api/v1/collaborations',
       },
     });
   });

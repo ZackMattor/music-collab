@@ -1,7 +1,7 @@
 import type { ApiResponse, LoginCredentials, RegisterData, User, Project } from '@/types'
 
 // Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1'
 const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '10000')
 
 // HTTP Client wrapper

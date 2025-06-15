@@ -166,7 +166,7 @@ describe('HelloWorld', () => {
 ### Environment Variables
 ```bash
 # API Configuration
-VITE_API_BASE_URL=http://localhost:3000
+VITE_API_BASE_URL=http://localhost:3000/api/v1
 VITE_API_TIMEOUT=10000
 
 # Feature Flags

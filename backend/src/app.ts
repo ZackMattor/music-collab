@@ -37,8 +37,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
-app.use('/api', createApiRoutes(prisma));
+// API routes with versioning
+app.use('/api/v1', createApiRoutes(prisma));
 
 // Error handling middleware (must be last)
 app.use(notFoundHandler);

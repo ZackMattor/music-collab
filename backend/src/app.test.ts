@@ -13,13 +13,16 @@ describe('Health Check', () => {
 });
 
 describe('API Routes', () => {
-  it('should return API information for /api endpoint', async () => {
-    const response = await request(app).get('/api');
+  it('should return API information for /api/v1 endpoint', async () => {
+    const response = await request(app).get('/api/v1');
     
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message', 'Music Collaboration Platform API');
     expect(response.body).toHaveProperty('version');
     expect(response.body).toHaveProperty('endpoints');
+    expect(response.body.endpoints.auth).toBe('/api/v1/auth');
+    expect(response.body.endpoints.users).toBe('/api/v1/users');
+    expect(response.body.endpoints.projects).toBe('/api/v1/projects');
   });
 
   it('should return 404 for non-existent routes', async () => {
