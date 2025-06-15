@@ -9,7 +9,7 @@
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --testPathIgnorePatterns=integration",
     "test:unit": "jest --testPathIgnorePatterns=integration",
     "test:integration": "npm run test:db:setup && jest --testPathPatterns=integration",
     "test:db:setup": "DATABASE_URL=postgresql://dev_user:dev_password@localhost:5432/music_collab_test?schema=public npx prisma db push --force-reset",
