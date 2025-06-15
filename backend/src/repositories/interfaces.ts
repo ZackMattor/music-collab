@@ -1,5 +1,31 @@
 import { User, Project, ProjectCollaborator, Stem, StemSegment, CollaborationSession } from '@prisma/client';
-import { CreateUserData, UpdateUserData, UserWithProjects } from '../types';
+
+// User-related types
+export interface CreateUserData {
+  email: string;
+  username: string;
+  displayName: string;
+  passwordHash: string;
+  avatar?: string;
+  defaultTempo?: number;
+  collaborationNotifications?: boolean;
+}
+
+export interface UpdateUserData {
+  email?: string;
+  username?: string;
+  displayName?: string;
+  avatar?: string;
+  defaultTempo?: number;
+  collaborationNotifications?: boolean;
+}
+
+export interface UserWithProjects extends User {
+  ownedProjects: Project[];
+  collaboratingProjects: (ProjectCollaborator & {
+    project: Project;
+  })[];
+}
 
 // Base repository interface with common CRUD operations
 export interface BaseRepository<T, CreateData, UpdateData> {
@@ -196,7 +222,7 @@ export interface UpdateSessionData {
 }
 
 // Extended types with relations
-export interface UserWithProjects extends User {
+export interface UserWithCollaborations extends User {
   ownedProjects: Project[];
   collaboratingProjects: ProjectCollaborator[];
 }

@@ -6,7 +6,8 @@ import compression from 'compression';
 import { config } from '@config/index';
 import { errorHandler } from '@middleware/errorHandler';
 import { notFoundHandler } from '@middleware/notFoundHandler';
-import { apiRoutes } from '@routes/index';
+import { createApiRoutes } from '@routes/index';
+import { prisma } from '@services/database';
 
 const app = express();
 
@@ -37,7 +38,7 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-app.use('/api', apiRoutes);
+app.use('/api', createApiRoutes(prisma));
 
 // Error handling middleware (must be last)
 app.use(notFoundHandler);

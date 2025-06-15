@@ -48,7 +48,7 @@ class Database {
   }
 
   public async transaction<T>(
-    fn: (prisma: PrismaClient) => Promise<T>
+    fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
   ): Promise<T> {
     return this.prisma.$transaction(fn);
   }
@@ -56,4 +56,5 @@ class Database {
 
 // Export singleton instance
 export const database = Database.getInstance();
+export const prisma = database.prisma;
 export { PrismaClient };
