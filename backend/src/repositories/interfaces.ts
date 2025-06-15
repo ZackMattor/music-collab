@@ -40,7 +40,7 @@ export interface FindManyOptions {
   skip?: number;
   take?: number;
   orderBy?: Record<string, 'asc' | 'desc'>;
-  where?: any; // Using any to avoid strict type checking issues with Prisma where clauses
+  where?: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Prisma where clauses have complex dynamic types
 }
 
 // User Repository Interface
@@ -90,26 +90,6 @@ export interface ICollaborationSessionRepository extends BaseRepository<Collabor
   findActiveSession(projectId: string): Promise<CollaborationSession | null>;
   expireSessions(beforeDate: Date): Promise<number>;
   findWithParticipants(id: string): Promise<SessionWithParticipants | null>;
-}
-
-// Type definitions for repository operations
-export interface CreateUserData {
-  email: string;
-  username: string;
-  displayName: string;
-  passwordHash: string;
-  avatar?: string;
-  defaultTempo?: number;
-  collaborationNotifications?: boolean;
-}
-
-export interface UpdateUserData {
-  email?: string;
-  username?: string;
-  displayName?: string;
-  avatar?: string;
-  defaultTempo?: number;
-  collaborationNotifications?: boolean;
 }
 
 export interface CreateProjectData {
@@ -186,21 +166,21 @@ export interface CreateSegmentData {
   name: string;
   startTime: number;
   endTime: number;
-  content: any; // Using any for JSON content to avoid strict type checking
+  content: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- JSON content with flexible structure
   volume?: number;
   fadeIn?: number;
   fadeOut?: number;
   lastModifiedBy: string;
   aiPrompt?: string;
   aiModel?: string;
-  aiParameters?: any; // Using any for JSON parameters
+  aiParameters?: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- AI parameters with flexible structure
 }
 
 export interface UpdateSegmentData {
   name?: string;
   startTime?: number;
   endTime?: number;
-  content?: any; // Using any for JSON content
+  content?: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- JSON content with flexible structure
   volume?: number;
   fadeIn?: number;
   fadeOut?: number;

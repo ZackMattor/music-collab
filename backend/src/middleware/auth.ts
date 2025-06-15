@@ -178,7 +178,7 @@ function checkPermissionLevel(userRole: string, requiredPermission: 'read' | 'wr
  * @deprecated Use createProjectAccessMiddleware instead
  * Legacy function maintained for backward compatibility
  */
-export function requireProjectAccess(permission: 'read' | 'write' | 'admin') {
+export function requireProjectAccess(_permission: 'read' | 'write' | 'admin') {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {

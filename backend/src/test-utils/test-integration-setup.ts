@@ -1,35 +1,36 @@
+import { PrismaClient } from '@prisma/client';
 import { testDatabase } from '../config/test-database';
-import { DatabaseSeeder } from './database-seeder';
+import { DatabaseSeeder, TestUser } from './database-seeder';
 
 /**
  * Integration test setup utilities for database-driven tests
  */
 export class TestIntegrationSetup {
-  static async beforeAll() {
+  static async beforeAll(): Promise<void> {
     // Connect to test database
     await testDatabase.connect();
   }
 
-  static async afterAll() {
+  static async afterAll(): Promise<void> {
     // Disconnect from test database
     await testDatabase.disconnect();
   }
 
-  static async beforeEach() {
+  static async beforeEach(): Promise<void> {
     // Clean database before each test
     await testDatabase.cleanup();
   }
 
-  static async afterEach() {
+  static async afterEach(): Promise<void> {
     // Additional cleanup if needed
     // The beforeEach cleanup should be sufficient for most cases
   }
 
-  static getSeeder() {
+  static getSeeder(): DatabaseSeeder {
     return new DatabaseSeeder(testDatabase.prisma);
   }
 
-  static getPrisma() {
+  static getPrisma(): PrismaClient {
     return testDatabase.prisma;
   }
 }
@@ -44,8 +45,8 @@ export function createAuthHeader(token: string): { Authorization: string } {
 /**
  * Helper function to extract JWT token from response
  */
-export function extractToken(response: any): string {
-  return response.body.tokens?.accessToken || response.body.token;
+export function extractToken(response: { body: { tokens?: { accessToken?: string }; token?: string } }): string {
+  return response.body.tokens?.accessToken || response.body.token || '';
 }
 
 /**
@@ -59,7 +60,15 @@ export async function createAuthenticatedUser(
     password: string;
   },
   seeder: DatabaseSeeder
-) {
+): Promise<{
+  user: TestUser;
+  credentials: {
+    email: string;
+    username: string;
+    displayName: string;
+    password: string;
+  };
+}> {
   const user = await seeder.createUser(userCredentials);
   return {
     user,

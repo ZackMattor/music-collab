@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { 
-  createAuthMiddleware, 
   createProjectAccessMiddleware,
-  createAuthRateLimiter,
   validateAuthRequest
 } from './auth';
 import { AuthService } from '../services/auth';
@@ -45,7 +43,7 @@ describe('Auth Middleware', () => {
 
     mockAuthService = {
       getUserFromToken: jest.fn()
-    } as any;
+    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Mock AuthService constructor to return our mock
     (AuthService as jest.MockedClass<typeof AuthService>).mockImplementation(() => mockAuthService);

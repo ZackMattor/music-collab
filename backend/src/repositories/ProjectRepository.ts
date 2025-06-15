@@ -17,7 +17,7 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async findMany(options: FindManyOptions = {}): Promise<Project[]> {
-    const findOptions: any = {};
+    const findOptions: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma query options
     
     if (options.skip !== undefined) findOptions.skip = options.skip;
     if (options.take !== undefined) findOptions.take = options.take;
@@ -28,7 +28,7 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async create(data: CreateProjectData): Promise<Project> {
-    const createData: any = {
+    const createData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma create options
       name: data.name,
       ownerId: data.ownerId,
       tempo: data.tempo ?? 120,
@@ -43,7 +43,7 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async update(id: string, data: UpdateProjectData): Promise<Project> {
-    const updateData: any = {
+    const updateData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma update options
       lastSyncAt: new Date()
     };
 

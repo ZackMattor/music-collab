@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { PrismaClient } from '@prisma/client';
 import { ProjectRepository } from './ProjectRepository';
 import { CreateProjectData, UpdateProjectData } from './interfaces';

@@ -161,7 +161,7 @@ export class AuthService {
 
       // Generate new tokens
       return this.generateTokens(user);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid refresh token');
     }
   }
@@ -179,7 +179,7 @@ export class AuthService {
       }
 
       return user;
-    } catch (error) {
+    } catch {
       throw new Error('Invalid access token');
     }
   }

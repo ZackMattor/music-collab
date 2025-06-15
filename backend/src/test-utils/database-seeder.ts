@@ -1,4 +1,4 @@
-import { PrismaClient, User, Role } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 export interface TestUser {
@@ -79,7 +79,18 @@ export class DatabaseSeeder {
     tempo?: number;
     timeSignatureNumerator?: number;
     timeSignatureDenominator?: number;
-  }>) {
+  }>): Promise<Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    ownerId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    lastAccessedAt: Date;
+    tempo: number;
+    timeSignatureNumerator: number;
+    timeSignatureDenominator: number;
+  }>> {
     const createdProjects = [];
 
     for (const projectData of projects) {
@@ -107,7 +118,13 @@ export class DatabaseSeeder {
     projectId: string;
     userId: string;
     role: Role;
-  }>) {
+  }>): Promise<Array<{
+    id: string;
+    projectId: string;
+    userId: string;
+    role: Role;
+    joinedAt: Date;
+  }>> {
     const createdCollaborators = [];
 
     for (const collaboratorData of collaborators) {
@@ -168,7 +185,9 @@ export class DatabaseSeeder {
   /**
    * Seed database with default test data
    */
-  async seedDefaultData() {
+  async seedDefaultData(): Promise<{
+    users: TestUser[];
+  }> {
     const testUsers = DatabaseSeeder.getDefaultTestUsers();
     const users = await this.createUsers(testUsers);
 

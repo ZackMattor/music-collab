@@ -163,7 +163,7 @@ export class AuthController {
         message: 'Profile retrieved successfully',
         user: req.user
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         error: 'Profile retrieval failed',
         message: 'An unexpected error occurred'
@@ -184,7 +184,7 @@ export class AuthController {
       res.json({
         message: 'Logout successful'
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         error: 'Logout failed',
         message: 'An unexpected error occurred'
@@ -223,7 +223,7 @@ export class AuthController {
         valid: true,
         user: userResponse
       });
-    } catch (error) {
+    } catch {
       res.status(401).json({
         error: 'Invalid token',
         message: 'The provided token is invalid or expired',

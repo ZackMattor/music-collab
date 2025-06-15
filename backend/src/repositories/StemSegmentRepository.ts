@@ -16,7 +16,7 @@ export class StemSegmentRepository implements IStemSegmentRepository {
   }
 
   async findMany(options: FindManyOptions = {}): Promise<StemSegment[]> {
-    const findOptions: any = {};
+    const findOptions: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma query options
     
     if (options.skip !== undefined) findOptions.skip = options.skip;
     if (options.take !== undefined) findOptions.take = options.take;
@@ -27,7 +27,7 @@ export class StemSegmentRepository implements IStemSegmentRepository {
   }
 
   async create(data: CreateSegmentData): Promise<StemSegment> {
-    const createData: any = {
+    const createData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma create options
       stemId: data.stemId,
       type: data.type,
       name: data.name,
@@ -52,7 +52,7 @@ export class StemSegmentRepository implements IStemSegmentRepository {
   }
 
   async update(id: string, data: UpdateSegmentData): Promise<StemSegment> {
-    const updateData: any = {
+    const updateData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma update options
       version: { increment: 1 } // Increment version for conflict resolution
     };
 

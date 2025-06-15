@@ -17,7 +17,7 @@ export class StemRepository implements IStemRepository {
   }
 
   async findMany(options: FindManyOptions = {}): Promise<Stem[]> {
-    const findOptions: any = {};
+    const findOptions: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma query options
     
     if (options.skip !== undefined) findOptions.skip = options.skip;
     if (options.take !== undefined) findOptions.take = options.take;
@@ -54,7 +54,7 @@ export class StemRepository implements IStemRepository {
   }
 
   async update(id: string, data: UpdateStemData): Promise<Stem> {
-    const updateData: any = {
+    const updateData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma update options
       version: { increment: 1 }
     };
 

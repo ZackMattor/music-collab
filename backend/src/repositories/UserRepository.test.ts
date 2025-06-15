@@ -310,8 +310,8 @@ describe('UserRepository', () => {
         include: { user: true }
       });
       expect(result).toEqual([
-        mockCollaborators[0]!.user,
-        mockCollaborators[1]!.user
+        mockCollaborators[0]?.user,
+        mockCollaborators[1]?.user
       ]);
     });
   });

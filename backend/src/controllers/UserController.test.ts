@@ -26,7 +26,7 @@ describe('UserController', () => {
   };
 
   beforeEach(() => {
-    mockUserRepository = new UserRepository({} as any) as jest.Mocked<UserRepository>;
+    mockUserRepository = new UserRepository({} as any) as jest.Mocked<UserRepository>; // eslint-disable-line @typescript-eslint/no-explicit-any
     userController = new UserController(mockUserRepository);
 
     mockReq = {

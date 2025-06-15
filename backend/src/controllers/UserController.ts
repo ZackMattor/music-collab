@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { UserRepository } from '../repositories/UserRepository';
-import { UpdateUserData } from '../repositories/interfaces';
 
 export interface UpdateProfileData {
   displayName?: string;
@@ -296,7 +295,7 @@ export class UserController {
 
       // Basic URL validation
       try {
-        new URL(avatarUrl);
+        new globalThis.URL(avatarUrl);
       } catch {
         res.status(400).json({
           error: 'Validation failed',

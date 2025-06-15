@@ -61,9 +61,9 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       });
 
       expect(user).toBeTruthy();
-      expect(user!.email).toBe(userData.email);
-      expect(user!.username).toBe(userData.username);
-      expect(user!.passwordHash).not.toBe(userData.password); // Password should be hashed
+      expect(user?.email).toBe(userData.email);
+      expect(user?.username).toBe(userData.username);
+      expect(user?.passwordHash).not.toBe(userData.password); // Password should be hashed
 
       // Step 3: Verify immediate access with returned token
       const token = extractToken(registerResponse);
@@ -72,7 +72,7 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         .set(createAuthHeader(token))
         .expect(200);
 
-      expect(profileResponse.body.user.id).toBe(user!.id);
+      expect(profileResponse.body.user.id).toBe(user?.id);
     });
 
     it('should prevent duplicate user registration in database', async () => {
@@ -402,7 +402,7 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         where: { id: user.id }
       });
 
-      expect(updatedUser!.displayName).toBe(newDisplayName);
+      expect(updatedUser?.displayName).toBe(newDisplayName);
 
       // Step 4: Update preferences
       const preferencesResponse = await request(app)
@@ -424,8 +424,8 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         where: { id: user.id }
       });
 
-      expect(updatedUserPrefs!.defaultTempo).toBe(140);
-      expect(updatedUserPrefs!.collaborationNotifications).toBe(false);
+      expect(updatedUserPrefs?.defaultTempo).toBe(140);
+      expect(updatedUserPrefs?.collaborationNotifications).toBe(false);
     });
 
     it('should enforce authentication for all user management endpoints', async () => {
@@ -439,7 +439,7 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       ];
 
       for (const endpoint of endpoints) {
-        const response = await (request(app) as any)[endpoint.method](endpoint.path)
+        const response = await (request(app) as any)[endpoint.method](endpoint.path) // eslint-disable-line @typescript-eslint/no-explicit-any
           .expect(401);
 
         expect(response.body.error).toBe('Authentication required');
@@ -460,7 +460,7 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       const user = await seeder.createUser(userData);
 
       // Create a project for the user
-      const projects = await seeder.createProjects([{
+      await seeder.createProjects([{
         name: 'User Project',
         description: 'A project to be deleted',
         ownerId: user.id
@@ -499,6 +499,8 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
 
       // Note: The actual cascade behavior depends on your schema constraints
       // This test verifies the behavior matches your implementation
+      // Projects should be deleted due to cascade constraints
+      expect(remainingProjects).toHaveLength(0);
     });
 
     it('should reject account deletion without password confirmation', async () => {
@@ -598,7 +600,7 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         where: { id: user.id }
       });
 
-      expect(finalUser!.displayName).toMatch(/^Updated Name \d$/);
+      expect(finalUser?.displayName).toMatch(/^Updated Name \d$/);
     });
   });
 });

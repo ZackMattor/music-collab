@@ -44,10 +44,10 @@ describe('AuthService', () => {
       findMany: jest.fn(),
       findWithProjects: jest.fn(),
       findCollaboratingUsers: jest.fn(),
-    } as any;
+    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Mock the constructor to return our mock instance
-    mockedUserRepository.mockImplementation(() => mockUserRepository as any);
+    mockedUserRepository.mockImplementation(() => mockUserRepository as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     authService = new AuthService(mockUserRepository);
 

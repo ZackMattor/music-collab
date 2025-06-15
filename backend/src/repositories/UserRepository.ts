@@ -17,7 +17,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findMany(options: FindManyOptions = {}): Promise<User[]> {
-    const findOptions: any = {};
+    const findOptions: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma query options
     
     if (options.skip !== undefined) findOptions.skip = options.skip;
     if (options.take !== undefined) findOptions.take = options.take;
@@ -28,7 +28,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async create(data: CreateUserData): Promise<User> {
-    const createData: any = {
+    const createData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma create options
       email: data.email,
       username: data.username,
       displayName: data.displayName,
@@ -43,7 +43,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(id: string, data: UpdateUserData): Promise<User> {
-    const updateData: any = {};
+    const updateData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma update options
 
     if (data.email !== undefined) updateData.email = data.email;
     if (data.username !== undefined) updateData.username = data.username;

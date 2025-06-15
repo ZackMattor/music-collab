@@ -17,8 +17,8 @@ jest.mock('../repositories/UserRepository');
 
 describe('AuthController', () => {
   let authController: AuthController;
-  let mockReq: any;
-  let mockRes: any;
+  let mockReq: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let mockRes: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const mockUser = {
     id: 'user-123',
@@ -41,7 +41,7 @@ describe('AuthController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    const mockPrisma = {} as any;
+    const mockPrisma = {} as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     authController = new AuthController(mockPrisma);
 
     mockReq = {
