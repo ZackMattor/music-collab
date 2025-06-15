@@ -133,10 +133,10 @@ This document outlines the development phases for the music collaboration platfo
 #### 3.4 Integration testing
 To ensure our authentication is working as expected we should implement true functional
 integration tests so we can validate our authentication and RBAC controls.
- - [ ] Set up a test database with proper isolation
- - [ ] Create comprehensive API flow tests that test real user journeys
- - [ ] Add database seeding and cleanup for reliable test data
- - [ ] Test actual authentication flows with real JWT validation
+ - [x] Set up a test database with proper isolation
+ - [x] Create comprehensive API flow tests that test real user journeys
+ - [x] Add database seeding and cleanup for reliable test data
+ - [x] Test actual authentication flows with real JWT validation
 
 #### 3.5 Frontend Authentication
 - [ ] Login/Register forms
