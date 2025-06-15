@@ -55,7 +55,6 @@ export function extractToken(response: { body: { tokens?: { accessToken?: string
 export async function createAuthenticatedUser(
   userCredentials: {
     email: string;
-    username: string;
     displayName: string;
     password: string;
   },
@@ -64,7 +63,6 @@ export async function createAuthenticatedUser(
   user: TestUser;
   credentials: {
     email: string;
-    username: string;
     displayName: string;
     password: string;
   };

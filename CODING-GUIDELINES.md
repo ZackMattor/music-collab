@@ -127,7 +127,6 @@ describe('Authentication Integration Tests', () => {
 // Create test users with real database operations
 const userData = {
   email: 'test@musiccollab.test',
-  username: 'test_user',
   displayName: 'Test User',
   password: 'TestPassword123!'
 };

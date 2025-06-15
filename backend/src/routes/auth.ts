@@ -22,7 +22,7 @@ export function createAuthRoutes(prisma: PrismaClient): Router {
    */
   router.post(
     '/register',
-    validateAuthRequest(['email', 'username', 'displayName', 'password']),
+    validateAuthRequest(['email', 'displayName', 'password']),
     authController.register
   );
 

@@ -29,7 +29,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
     it('should complete full user registration flow with database persistence', async () => {
       const userData = {
         email: 'newuser@musiccollab.test',
-        username: 'new_user',
         displayName: 'New User',
         password: 'SecurePassword123!'
       };
@@ -44,7 +43,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         message: 'User registered successfully',
         user: {
           email: userData.email,
-          username: userData.username,
           displayName: userData.displayName,
           defaultTempo: 120,
           collaborationNotifications: true
@@ -62,7 +60,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
 
       expect(user).toBeTruthy();
       expect(user?.email).toBe(userData.email);
-      expect(user?.username).toBe(userData.username);
       expect(user?.passwordHash).not.toBe(userData.password); // Password should be hashed
 
       // Step 3: Verify immediate access with returned token
@@ -79,7 +76,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Create user in database
       const userData = {
         email: 'duplicate@musiccollab.test',
-        username: 'duplicate_user',
         displayName: 'Duplicate User',
         password: 'Password123!'
       };
@@ -110,7 +106,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user in database
       const userData = {
         email: 'loginuser@musiccollab.test',
-        username: 'login_user',
         displayName: 'Login User',
         password: 'LoginPassword123!'
       };
@@ -131,7 +126,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         user: {
           id: createdUser.id,
           email: userData.email,
-          username: userData.username,
           displayName: userData.displayName
         },
         tokens: {
@@ -154,7 +148,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user in database
       const userData = {
         email: 'wrongpass@musiccollab.test',
-        username: 'wrong_pass',
         displayName: 'Wrong Pass User',
         password: 'CorrectPassword123!'
       };
@@ -197,7 +190,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user and get token
       const userData = {
         email: 'jwtuser@musiccollab.test',
-        username: 'jwt_user',
         displayName: 'JWT User',
         password: 'JWTPassword123!'
       };
@@ -226,7 +218,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
         user: {
           id: user.id,
           email: userData.email,
-          username: userData.username,
           displayName: userData.displayName
         }
       });
@@ -267,7 +258,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user and get token
       const userData = {
         email: 'deleteduser@musiccollab.test',
-        username: 'deleted_user',
         displayName: 'Deleted User',
         password: 'DeletedPassword123!'
       };
@@ -304,7 +294,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user and get tokens
       const userData = {
         email: 'refreshuser@musiccollab.test',
-        username: 'refresh_user',
         displayName: 'Refresh User',
         password: 'RefreshPassword123!'
       };
@@ -362,7 +351,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user and get token
       const userData = {
         email: 'profileuser@musiccollab.test',
-        username: 'profile_user',
         displayName: 'Profile User',
         password: 'ProfilePassword123!'
       };
@@ -452,7 +440,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
       // Setup: Create user with some data
       const userData = {
         email: 'deleteuser@musiccollab.test',
-        username: 'delete_user',
         displayName: 'Delete User',
         password: 'DeletePassword123!'
       };
@@ -506,7 +493,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
     it('should reject account deletion without password confirmation', async () => {
       const userData = {
         email: 'noconfirm@musiccollab.test',
-        username: 'no_confirm',
         displayName: 'No Confirm User',
         password: 'NoConfirmPassword123!'
       };
@@ -563,7 +549,6 @@ describe('Authentication Integration Tests - Phase 3.4', () => {
     it('should handle concurrent user operations safely', async () => {
       const userData = {
         email: 'concurrent@musiccollab.test',
-        username: 'concurrent_user',
         displayName: 'Concurrent User',
         password: 'ConcurrentPassword123!'
       };

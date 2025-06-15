@@ -1,13 +1,9 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { authApi, tokenManager } from '@/services/api'
+import type { User, LoginCredentials, RegisterData } from '@/types'
 
-export interface User {
-  id: string
-  username: string
-  email: string
-  displayName: string
-  avatar?: string
-}
+export { type User }
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -20,87 +16,116 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoggedIn = computed(() => isAuthenticated.value && user.value !== null)
 
   // Actions
-  const login = async (email: string, password: string) => {
+  const login = async (credentials: LoginCredentials) => {
     isLoading.value = true
     try {
-      // TODO: Implement actual authentication when backend is ready
-      console.log('Login attempt:', { email, password })
+      const response = await authApi.login(credentials)
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock successful login
-      user.value = {
-        id: '1',
-        username: 'testuser',
-        email: email,
-        displayName: 'Test User'
+      if (response.success && response.data) {
+        user.value = response.data.user
+        isAuthenticated.value = true
+        
+        // Store tokens
+        tokenManager.setTokens(response.data.tokens)
+        
+        return { success: true }
+      } else {
+        return { 
+          success: false, 
+          error: response.error?.message || 'Login failed' 
+        }
       }
-      isAuthenticated.value = true
-      
-      return { success: true }
     } catch (error) {
       console.error('Login error:', error)
-      return { success: false, error: 'Login failed' }
+      return { 
+        success: false, 
+        error: 'Login failed. Please try again.' 
+      }
     } finally {
       isLoading.value = false
     }
   }
 
-  const register = async (userData: { username: string; email: string; password: string; displayName: string }) => {
+  const register = async (userData: RegisterData) => {
     isLoading.value = true
     try {
-      // TODO: Implement actual registration when backend is ready
-      console.log('Registration attempt:', userData)
+      const response = await authApi.register(userData)
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock successful registration
-      user.value = {
-        id: '1',
-        username: userData.username,
-        email: userData.email,
-        displayName: userData.displayName
+      if (response.success && response.data) {
+        user.value = response.data.user
+        isAuthenticated.value = true
+        
+        // Store tokens
+        tokenManager.setTokens(response.data.tokens)
+        
+        return { success: true }
+      } else {
+        return { 
+          success: false, 
+          error: response.error?.message || 'Registration failed' 
+        }
       }
-      isAuthenticated.value = true
-      
-      return { success: true }
     } catch (error) {
       console.error('Registration error:', error)
-      return { success: false, error: 'Registration failed' }
+      return { 
+        success: false, 
+        error: 'Registration failed. Please try again.' 
+      }
     } finally {
       isLoading.value = false
     }
   }
 
-  const logout = () => {
-    user.value = null
-    isAuthenticated.value = false
-    // TODO: Clear tokens when authentication is implemented
+  const logout = async () => {
+    try {
+      await authApi.logout()
+    } catch (error) {
+      console.error('Logout error:', error)
+    } finally {
+      // Always clear local state
+      user.value = null
+      isAuthenticated.value = false
+      tokenManager.clearTokens()
+    }
   }
 
   const checkAuthStatus = async () => {
-    // TODO: Check if user is authenticated (e.g., validate JWT token)
-    // For now, just check if user data exists in local storage
-    const savedUser = localStorage.getItem('musiccollab_user')
-    if (savedUser) {
-      try {
-        user.value = JSON.parse(savedUser)
+    const accessToken = tokenManager.getAccessToken()
+    if (!accessToken) {
+      return
+    }
+
+    try {
+      const response = await authApi.getCurrentUser()
+      if (response.success && response.data) {
+        user.value = response.data
         isAuthenticated.value = true
-      } catch (error) {
-        console.error('Error parsing saved user data:', error)
-        localStorage.removeItem('musiccollab_user')
+      } else {
+        // Token might be invalid, clear it
+        await logout()
       }
+    } catch (error) {
+      console.error('Auth check error:', error)
+      // Token might be invalid, clear it
+      await logout()
     }
   }
 
-  // Auto-save user to localStorage when user changes
-  const saveUserToStorage = () => {
-    if (user.value) {
-      localStorage.setItem('musiccollab_user', JSON.stringify(user.value))
-    } else {
-      localStorage.removeItem('musiccollab_user')
+  const refreshTokens = async (): Promise<boolean> => {
+    try {
+      const response = await authApi.refreshToken()
+      if (response.success && response.data) {
+        tokenManager.setTokens(response.data)
+        return true
+      } else {
+        // Refresh failed, logout user
+        await logout()
+        return false
+      }
+    } catch (error) {
+      console.error('Token refresh error:', error)
+      await logout()
+      return false
     }
   }
 
@@ -119,6 +144,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     checkAuthStatus,
-    saveUserToStorage
+    refreshTokens
   }
 })

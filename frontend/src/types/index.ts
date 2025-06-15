@@ -21,9 +21,8 @@ export interface ApiResponse<T = unknown> {
 // User Types
 export interface User {
   id: string
-  username: string
   email: string
-  displayName: string
+  displayName?: string
   avatar?: string
   bio?: string
   musicalPreferences: {
@@ -107,10 +106,9 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
-  username: string
   email: string
   password: string
-  displayName: string
+  displayName?: string
 }
 
 export interface AuthTokens {

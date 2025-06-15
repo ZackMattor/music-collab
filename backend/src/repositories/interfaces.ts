@@ -3,8 +3,7 @@ import { User, Project, ProjectCollaborator, Stem, StemSegment, CollaborationSes
 // User-related types
 export interface CreateUserData {
   email: string;
-  username: string;
-  displayName: string;
+  displayName?: string;
   passwordHash: string;
   avatar?: string;
   defaultTempo?: number;
@@ -13,7 +12,6 @@ export interface CreateUserData {
 
 export interface UpdateUserData {
   email?: string;
-  username?: string;
   displayName?: string;
   avatar?: string;
   defaultTempo?: number;
@@ -46,7 +44,6 @@ export interface FindManyOptions {
 // User Repository Interface
 export interface IUserRepository extends BaseRepository<User, CreateUserData, UpdateUserData> {
   findByEmail(email: string): Promise<User | null>;
-  findByUsername(username: string): Promise<User | null>;
   findWithProjects(id: string): Promise<UserWithProjects | null>;
   findCollaboratingUsers(projectId: string): Promise<User[]>;
 }

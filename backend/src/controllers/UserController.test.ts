@@ -15,7 +15,6 @@ describe('UserController', () => {
   const mockUser: User = {
     id: 'user-123',
     email: 'test@example.com',
-    username: 'testuser',
     displayName: 'Test User',
     avatar: 'https://example.com/avatar.jpg',
     passwordHash: 'hashed-password',
@@ -33,7 +32,6 @@ describe('UserController', () => {
       user: {
         id: 'user-123',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User'
       },
       body: {}
@@ -62,7 +60,6 @@ describe('UserController', () => {
         user: {
           id: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           displayName: mockUser.displayName,
           avatar: mockUser.avatar,
           defaultTempo: mockUser.defaultTempo,
@@ -324,7 +321,6 @@ describe('UserController', () => {
         message: 'Avatar updated successfully',
         user: {
           id: updatedUser.id,
-          username: updatedUser.username,
           displayName: updatedUser.displayName,
           avatar: updatedUser.avatar
         }

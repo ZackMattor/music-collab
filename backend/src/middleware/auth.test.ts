@@ -56,7 +56,6 @@ describe('Auth Middleware', () => {
       mockReq.user = {
         id: 'user1',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User'
       };
     });

@@ -220,7 +220,7 @@ describe('ProjectRepository', () => {
           { id: 'stem-1', name: 'Stem 1', segments: [] }
         ],
         collaborators: [
-          { user: { id: 'user-1', username: 'collaborator' } }
+          { user: { id: 'user-1' } }
         ]
       };
 
@@ -480,7 +480,7 @@ describe('ProjectRepository', () => {
           { id: 'stem-1', name: 'Stem 1', segments: [] }
         ],
         collaborators: [
-          { user: { id: 'user-1', username: 'collaborator' } }
+          { user: { id: 'user-1' } }
         ]
       };
 

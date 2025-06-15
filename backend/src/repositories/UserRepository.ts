@@ -30,13 +30,12 @@ export class UserRepository implements IUserRepository {
   async create(data: CreateUserData): Promise<User> {
     const createData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma create options
       email: data.email,
-      username: data.username,
-      displayName: data.displayName,
       passwordHash: data.passwordHash,
       defaultTempo: data.defaultTempo ?? 120,
       collaborationNotifications: data.collaborationNotifications ?? true
     };
 
+    if (data.displayName !== undefined) createData.displayName = data.displayName;
     if (data.avatar !== undefined) createData.avatar = data.avatar;
 
     return this.prisma.user.create({ data: createData });
@@ -46,7 +45,6 @@ export class UserRepository implements IUserRepository {
     const updateData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any -- Dynamic Prisma update options
 
     if (data.email !== undefined) updateData.email = data.email;
-    if (data.username !== undefined) updateData.username = data.username;
     if (data.displayName !== undefined) updateData.displayName = data.displayName;
     if (data.avatar !== undefined) updateData.avatar = data.avatar;
     if (data.defaultTempo !== undefined) updateData.defaultTempo = data.defaultTempo;
@@ -67,12 +65,6 @@ export class UserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { email }
-    });
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { username }
     });
   }
 

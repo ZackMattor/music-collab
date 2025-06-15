@@ -10,8 +10,7 @@ declare global {
       user?: {
         id: string;
         email: string;
-        username: string;
-        displayName: string;
+        displayName: string | null;
       };
     }
   }
@@ -55,7 +54,6 @@ export function createAuthMiddleware(prisma: PrismaClient) {
         req.user = {
           id: user.id,
           email: user.email,
-          username: user.username,
           displayName: user.displayName
         };
 

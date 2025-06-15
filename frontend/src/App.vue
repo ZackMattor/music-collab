@@ -14,10 +14,36 @@
           <RouterLink to="/" class="nav-link">Home</RouterLink>
           <RouterLink to="/about" class="nav-link">About</RouterLink>
           <RouterLink to="/docs" class="nav-link">Documentation</RouterLink>
-          <!-- TODO: Add authentication links when auth is implemented -->
+          <!-- Authentication Navigation -->
           <div class="auth-links">
-            <button class="btn btn-outline" @click="handleLogin">Login</button>
-            <button class="btn btn-primary" @click="handleSignup">Sign Up</button>
+            <template v-if="authStore.isAuthenticated">
+              <RouterLink to="/dashboard" class="nav-link">Dashboard</RouterLink>
+              <div class="user-menu">
+                <button @click="showUserMenu = !showUserMenu" class="user-button">
+                  <img 
+                    v-if="authStore.user?.avatar" 
+                    :src="authStore.user.avatar" 
+                    :alt="authStore.user.displayName"
+                    class="user-avatar"
+                  />
+                  <div v-else class="avatar-placeholder">
+                    {{ userInitials }}
+                  </div>
+                </button>
+                <div v-if="showUserMenu" class="user-dropdown">
+                  <div class="user-info">
+                    <p class="user-name">{{ authStore.user?.displayName }}</p>
+                    <p class="user-email">{{ authStore.user?.email }}</p>
+                  </div>
+                  <hr>
+                  <button @click="handleLogout" class="dropdown-item logout">Sign Out</button>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <RouterLink to="/auth" class="btn btn-outline">Sign In</RouterLink>
+              <RouterLink to="/auth?tab=register" class="btn btn-primary">Sign Up</RouterLink>
+            </template>
           </div>
         </div>
 
@@ -33,8 +59,14 @@
         <RouterLink to="/about" class="mobile-nav-link" @click="closeMobileMenu">About</RouterLink>
         <RouterLink to="/docs" class="mobile-nav-link" @click="closeMobileMenu">Documentation</RouterLink>
         <div class="mobile-auth-links">
-          <button class="btn btn-outline mobile-btn" @click="handleLogin">Login</button>
-          <button class="btn btn-primary mobile-btn" @click="handleSignup">Sign Up</button>
+          <template v-if="authStore.isAuthenticated">
+            <RouterLink to="/dashboard" class="mobile-nav-link" @click="closeMobileMenu">Dashboard</RouterLink>
+            <button class="btn btn-outline mobile-btn" @click="handleLogout">Sign Out</button>
+          </template>
+          <template v-else>
+            <RouterLink to="/auth" class="btn btn-outline mobile-btn" @click="closeMobileMenu">Sign In</RouterLink>
+            <RouterLink to="/auth?tab=register" class="btn btn-primary mobile-btn" @click="closeMobileMenu">Sign Up</RouterLink>
+          </template>
         </div>
       </div>
     </header>
@@ -77,11 +109,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
+// Store
+const authStore = useAuthStore()
+
+// State
 const mobileMenuOpen = ref(false)
+const showUserMenu = ref(false)
 
+// Computed
+const userInitials = computed(() => {
+  if (!authStore.user?.displayName) return '?'
+  return authStore.user.displayName
+    .split(' ')
+    .map(name => name.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join('')
+})
+
+// Methods
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
@@ -90,15 +139,27 @@ const closeMobileMenu = () => {
   mobileMenuOpen.value = false
 }
 
-const handleLogin = () => {
-  // TODO: Implement login when authentication is ready
-  console.log('Login clicked - Authentication coming soon!')
+const handleLogout = async () => {
+  showUserMenu.value = false
+  await authStore.logout()
 }
 
-const handleSignup = () => {
-  // TODO: Implement signup when authentication is ready
-  console.log('Sign Up clicked - Authentication coming soon!')
+// Initialize auth status on app load
+onMounted(() => {
+  authStore.checkAuthStatus()
+})
+
+// Close user menu when clicking outside
+const handleClickOutside = (event: Event) => {
+  const target = event.target as Element
+  if (!target.closest('.user-menu')) {
+    showUserMenu.value = false
+  }
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
 </script>
 
 <style>
@@ -344,5 +405,105 @@ body {
     grid-template-columns: 1fr;
     text-align: center;
   }
+}
+
+/* Authentication styles */
+.user-menu {
+  position: relative;
+}
+
+.user-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.user-button:hover {
+  transform: scale(1.05);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: 2px solid #e5e7eb;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.user-info {
+  padding: 1rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.user-email {
+  color: #718096;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.user-dropdown hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #4a5568;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f7fafc;
+}
+
+.dropdown-item.logout {
+  color: #e53e3e;
+}
+
+.dropdown-item.logout:hover {
+  background-color: #fed7d7;
 }
 </style>

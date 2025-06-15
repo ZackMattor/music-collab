@@ -14,7 +14,6 @@ async function main() {
     update: {},
     create: {
       email: 'alice@musiccollab.dev',
-      username: 'alice_music',
       displayName: 'Alice Johnson',
       passwordHash: hashedPassword,
       defaultTempo: 120,
@@ -27,7 +26,6 @@ async function main() {
     update: {},
     create: {
       email: 'bob@musiccollab.dev',
-      username: 'bob_beats',
       displayName: 'Bob Smith',
       passwordHash: hashedPassword,
       defaultTempo: 128,
@@ -40,7 +38,6 @@ async function main() {
     update: {},
     create: {
       email: 'charlie@musiccollab.dev',
-      username: 'charlie_chords',
       displayName: 'Charlie Brown',
       passwordHash: hashedPassword,
       defaultTempo: 110,

@@ -19,7 +19,6 @@ export class AuthController {
     try {
       const registerData: RegisterData = {
         email: req.body.email,
-        username: req.body.username,
         displayName: req.body.displayName,
         password: req.body.password
       };
@@ -30,7 +29,6 @@ export class AuthController {
       const userResponse = {
         id: user.id,
         email: user.email,
-        username: user.username,
         displayName: user.displayName,
         avatar: user.avatar,
         defaultTempo: user.defaultTempo,
@@ -88,7 +86,6 @@ export class AuthController {
       const userResponse = {
         id: user.id,
         email: user.email,
-        username: user.username,
         displayName: user.displayName,
         avatar: user.avatar,
         defaultTempo: user.defaultTempo,
@@ -213,7 +210,6 @@ export class AuthController {
       const userResponse = {
         id: user.id,
         email: user.email,
-        username: user.username,
         displayName: user.displayName,
         avatar: user.avatar
       };
