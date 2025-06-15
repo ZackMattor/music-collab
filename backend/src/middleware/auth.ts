@@ -79,6 +79,105 @@ export function createAuthMiddleware(prisma: PrismaClient) {
  * Role-based authorization middleware
  * Checks if user has required permissions for project operations
  */
+export function createProjectAccessMiddleware(prisma: PrismaClient) {
+  return (permission: 'read' | 'write' | 'admin') => {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        if (!req.user) {
+          res.status(401).json({
+            error: 'Authentication required',
+            message: 'User must be authenticated to access this resource'
+          });
+          return;
+        }
+
+        const projectId = req.params.projectId || req.body.projectId;
+        
+        if (!projectId) {
+          res.status(400).json({
+            error: 'Project ID required',
+            message: 'Project ID must be provided in URL parameters or request body'
+          });
+          return;
+        }
+
+        // Check if project exists
+        const project = await prisma.project.findUnique({
+          where: { id: projectId }
+        });
+
+        if (!project) {
+          res.status(404).json({
+            error: 'Project not found',
+            message: 'The specified project does not exist'
+          });
+          return;
+        }
+
+        // Check if user is the project owner (has all permissions)
+        if (project.ownerId === req.user.id) {
+          return next();
+        }
+
+        // Check if user is a collaborator with appropriate permissions
+        const collaborator = await prisma.projectCollaborator.findUnique({
+          where: {
+            projectId_userId: {
+              projectId: projectId,
+              userId: req.user.id
+            }
+          }
+        });
+
+        if (!collaborator) {
+          res.status(403).json({
+            error: 'Access denied',
+            message: 'You do not have access to this project'
+          });
+          return;
+        }
+
+        // Check permission level
+        const hasPermission = checkPermissionLevel(collaborator.role, permission);
+        
+        if (!hasPermission) {
+          res.status(403).json({
+            error: 'Insufficient permissions',
+            message: `You need ${permission} permission to perform this action`
+          });
+          return;
+        }
+
+        next();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Authorization failed';
+        res.status(403).json({
+          error: 'Authorization failed',
+          message
+        });
+      }
+    };
+  };
+}
+
+/**
+ * Helper function to check if a role has the required permission level
+ */
+function checkPermissionLevel(userRole: string, requiredPermission: 'read' | 'write' | 'admin'): boolean {
+  const roleHierarchy = {
+    'VIEWER': ['read'],
+    'COLLABORATOR': ['read', 'write'],
+    'ADMIN': ['read', 'write', 'admin']
+  };
+
+  const userPermissions = roleHierarchy[userRole as keyof typeof roleHierarchy] || [];
+  return userPermissions.includes(requiredPermission);
+}
+
+/**
+ * @deprecated Use createProjectAccessMiddleware instead
+ * Legacy function maintained for backward compatibility
+ */
 export function requireProjectAccess(permission: 'read' | 'write' | 'admin') {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -100,9 +199,8 @@ export function requireProjectAccess(permission: 'read' | 'write' | 'admin') {
         return;
       }
 
-      // TODO: Implement project permission checking logic
-      // This will be implemented when we have the Project service
-      // For now, just check if user exists
+      // Legacy implementation - just check if user exists
+      // Use createProjectAccessMiddleware for proper permission checking
       
       next();
     } catch (error) {

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { createAuthRoutes } from './auth';
+import { createUserRoutes } from './users';
 
 export function createApiRoutes(prisma: PrismaClient): Router {
   const router = Router();
@@ -25,10 +26,8 @@ export function createApiRoutes(prisma: PrismaClient): Router {
   // Authentication routes
   router.use('/auth', createAuthRoutes(prisma));
 
-  // Placeholder routes for future implementation
-  router.use('/users', (req, res) => {
-    res.json({ message: 'User management endpoints - Coming soon' });
-  });
+  // User management routes
+  router.use('/users', createUserRoutes(prisma));
 
   router.use('/projects', (req, res) => {
     res.json({ message: 'Project management endpoints - Coming soon' });

@@ -121,21 +121,31 @@ This document outlines the development phases for the music collaboration platfo
 #### 3.2 Authorization Middleware
 - [x] JWT authentication middleware ✅ *Bearer token validation*
 - [x] Role-based authorization middleware ✅ *Project permission framework*
-- [ ] Project permission checking
+- [x] Project permission checking ✅ *Complete role-based access control*
 - [x] API rate limiting implementation ✅ *15-minute window rate limiting*
 
 #### 3.3 User Management API
-- [ ] User profile endpoints (GET, PUT)
-- [ ] User preferences management
-- [ ] Avatar upload functionality
-- [ ] Account deletion/deactivation
+- [x] User profile endpoints (GET, PUT) ✅ *Complete profile management with validation*
+- [x] User preferences management ✅ *Tempo and notification settings*
+- [x] Avatar upload functionality ✅ *URL-based avatar system with validation*
+- [x] Account deletion/deactivation ✅ *Secure deletion with password confirmation*
 
-#### 3.4 Frontend Authentication
+#### 3.4 Integration testing
+To ensure our authentication is working as expected we should implement true functional
+integration tests so we can validate our authentication and RBAC controls.
+ - [ ] Set up a test database with proper isolation
+ - [ ] Create comprehensive API flow tests that test real user journeys
+ - [ ] Add database seeding and cleanup for reliable test data
+ - [ ] Test actual authentication flows with real JWT validation
+
+#### 3.5 Frontend Authentication
 - [ ] Login/Register forms
 - [ ] Authentication state management (Pinia)
 - [ ] Protected route guards
 - [ ] Automatic token refresh
 - [ ] User profile management UI
+
+
 
 ---
 
@@ -149,6 +159,8 @@ This document outlines the development phases for the music collaboration platfo
 - [ ] Project details retrieval
 - [ ] Project update functionality
 - [ ] Project deletion with cascading
+- [ ] Ensure project auth middleware is being used for RBAC access to projects
+      See "Middleware Usage Examples" in PHASE-3.2-COMPLETE.md for examples
 
 #### 4.2 Collaboration Management
 - [ ] Project invitation system

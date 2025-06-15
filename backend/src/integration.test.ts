@@ -3,12 +3,12 @@ import { app } from './app';
 
 describe('API Versioning Integration', () => {
   describe('Versioned Endpoints', () => {
-    it('should access auth endpoints via /api/v1/auth', async () => {
-      // Test the auth info endpoint (placeholder)
-      const response = await request(app).get('/api/v1/users');
+    it('should require authentication for user endpoints', async () => {
+      // Test that user endpoints now require authentication
+      const response = await request(app).get('/api/v1/users/profile');
       
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('message', 'User management endpoints - Coming soon');
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty('error', 'Authentication required');
     });
 
     it('should access projects endpoints via /api/v1/projects', async () => {
