@@ -4,8 +4,7 @@ import bcrypt from 'bcryptjs';
 export interface TestUser {
   id: string;
   email: string;
-  username: string;
-  displayName: string;
+  displayName?: string | null;
   avatar?: string | null;
   passwordHash: string;
   defaultTempo: number;
@@ -16,8 +15,7 @@ export interface TestUser {
 
 export interface TestUserCredentials {
   email: string;
-  username: string;
-  displayName: string;
+  displayName?: string;
   password: string;
   avatar?: string | null;
   defaultTempo?: number;
@@ -40,16 +38,18 @@ export class DatabaseSeeder {
     for (const userData of users) {
       const passwordHash = await bcrypt.hash(userData.password, 12);
       
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const createData: any = {
+        email: userData.email,
+        passwordHash,
+        displayName: userData.displayName,
+        avatar: userData.avatar || null,
+        defaultTempo: userData.defaultTempo || 120,
+        collaborationNotifications: userData.collaborationNotifications ?? true,
+      };
+      
       const user = await this.prisma.user.create({
-        data: {
-          email: userData.email,
-          username: userData.username,
-          displayName: userData.displayName,
-          passwordHash,
-          avatar: userData.avatar || null,
-          defaultTempo: userData.defaultTempo || 120,
-          collaborationNotifications: userData.collaborationNotifications ?? true,
-        },
+        data: createData,
       });
 
       createdUsers.push(user);
@@ -149,7 +149,6 @@ export class DatabaseSeeder {
     return [
       {
         email: 'admin@musiccollab.test',
-        username: 'admin_user',
         displayName: 'Admin User',
         password: 'AdminPassword123!',
         defaultTempo: 120,
@@ -157,7 +156,6 @@ export class DatabaseSeeder {
       },
       {
         email: 'john@musiccollab.test',
-        username: 'john_doe',
         displayName: 'John Doe',
         password: 'JohnPassword123!',
         defaultTempo: 120,
@@ -165,7 +163,6 @@ export class DatabaseSeeder {
       },
       {
         email: 'jane@musiccollab.test',
-        username: 'jane_smith',
         displayName: 'Jane Smith',
         password: 'JanePassword123!',
         defaultTempo: 140,
@@ -173,7 +170,6 @@ export class DatabaseSeeder {
       },
       {
         email: 'collaborator@musiccollab.test',
-        username: 'collaborator',
         displayName: 'Music Collaborator',
         password: 'CollabPassword123!',
         defaultTempo: 100,

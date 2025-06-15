@@ -20,7 +20,6 @@ describe('AuthService', () => {
   const mockUser: User = {
     id: 'user-1',
     email: 'test@example.com',
-    username: 'testuser',
     displayName: 'Test User',
     avatar: null,
     passwordHash: 'hashed-password',
@@ -37,7 +36,6 @@ describe('AuthService', () => {
     mockUserRepository = {
       findById: jest.fn(),
       findByEmail: jest.fn(),
-      findByUsername: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -103,7 +101,6 @@ describe('AuthService', () => {
         {
           userId: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           type: 'access'
         },
         'test-access-secret',
@@ -114,7 +111,6 @@ describe('AuthService', () => {
         {
           userId: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           type: 'refresh'
         },
         'test-refresh-secret',
@@ -130,7 +126,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'access' as const
       };
 
@@ -147,7 +142,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'refresh' as const
       };
 
@@ -163,14 +157,12 @@ describe('AuthService', () => {
   describe('register', () => {
     const registerData: RegisterData = {
       email: 'test@example.com',
-      username: 'testuser',
       displayName: 'Test User',
       password: 'testpassword123'
     };
 
     it('should register a new user successfully', async () => {
       mockUserRepository.findByEmail.mockResolvedValue(null);
-      mockUserRepository.findByUsername.mockResolvedValue(null);
       mockUserRepository.create.mockResolvedValue(mockUser);
       mockedBcrypt.hash.mockResolvedValue('hashed-password' as never);
       mockedJwt.sign
@@ -180,11 +172,9 @@ describe('AuthService', () => {
       const result = await authService.register(registerData);
 
       expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(registerData.email);
-      expect(mockUserRepository.findByUsername).toHaveBeenCalledWith(registerData.username);
       expect(mockedBcrypt.hash).toHaveBeenCalledWith(registerData.password, 12);
       expect(mockUserRepository.create).toHaveBeenCalledWith({
         email: registerData.email,
-        username: registerData.username,
         displayName: registerData.displayName,
         passwordHash: 'hashed-password'
       });
@@ -203,15 +193,6 @@ describe('AuthService', () => {
       );
     });
 
-    it('should throw error if username already exists', async () => {
-      mockUserRepository.findByEmail.mockResolvedValue(null);
-      mockUserRepository.findByUsername.mockResolvedValue(mockUser);
-
-      await expect(authService.register(registerData)).rejects.toThrow(
-        'User with this username already exists'
-      );
-    });
-
     it('should throw error for invalid email', async () => {
       const invalidData = { ...registerData, email: 'invalid-email' };
 
@@ -225,14 +206,6 @@ describe('AuthService', () => {
 
       await expect(authService.register(invalidData)).rejects.toThrow(
         'Password must be at least 8 characters long'
-      );
-    });
-
-    it('should throw error for invalid username', async () => {
-      const invalidData = { ...registerData, username: 'test user!' };
-
-      await expect(authService.register(invalidData)).rejects.toThrow(
-        'Username can only contain letters, numbers, underscores, and hyphens'
       );
     });
   });
@@ -285,7 +258,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'refresh' as const
       };
 
@@ -319,7 +291,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'refresh' as const
       };
 
@@ -338,7 +309,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'access' as const
       };
 
@@ -366,7 +336,6 @@ describe('AuthService', () => {
       const payload = {
         userId: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         type: 'access' as const
       };
 

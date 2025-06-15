@@ -43,7 +43,6 @@ export class UserController {
       const userProfile = {
         id: user.id,
         email: user.email,
-        username: user.username,
         displayName: user.displayName,
         avatar: user.avatar,
         defaultTempo: user.defaultTempo,
@@ -127,7 +126,6 @@ export class UserController {
       const userProfile = {
         id: updatedUser.id,
         email: updatedUser.email,
-        username: updatedUser.username,
         displayName: updatedUser.displayName,
         avatar: updatedUser.avatar,
         defaultTempo: updatedUser.defaultTempo,
@@ -311,7 +309,6 @@ export class UserController {
         message: 'Avatar updated successfully',
         user: {
           id: updatedUser.id,
-          username: updatedUser.username,
           displayName: updatedUser.displayName,
           avatar: updatedUser.avatar
         }

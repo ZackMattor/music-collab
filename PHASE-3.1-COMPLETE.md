@@ -114,7 +114,6 @@ AuthController
 POST /api/v1/auth/register
 {
   "email": "test@example.com",
-  "username": "testuser", 
   "displayName": "Test User",
   "password": "securepassword123"
 }

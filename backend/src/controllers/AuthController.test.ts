@@ -23,7 +23,6 @@ describe('AuthController', () => {
   const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
-    username: 'testuser',
     displayName: 'Test User',
     avatar: null,
     passwordHash: 'hashed-password',
@@ -60,7 +59,6 @@ describe('AuthController', () => {
       // Arrange
       mockReq.body = {
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'securepassword123'
       };
@@ -76,7 +74,6 @@ describe('AuthController', () => {
       // Assert
       expect(mockAuthService.register).toHaveBeenCalledWith({
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'securepassword123'
       });
@@ -87,7 +84,6 @@ describe('AuthController', () => {
         user: {
           id: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           displayName: mockUser.displayName,
           avatar: mockUser.avatar,
           defaultTempo: mockUser.defaultTempo,
@@ -103,7 +99,6 @@ describe('AuthController', () => {
       // Arrange
       mockReq.body = {
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'securepassword123'
       };
@@ -127,7 +122,6 @@ describe('AuthController', () => {
       // Arrange
       mockReq.body = {
         email: 'invalid-email',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'weak'
       };
@@ -151,7 +145,6 @@ describe('AuthController', () => {
       // Arrange
       mockReq.body = {
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'securepassword123'
       };
@@ -199,7 +192,6 @@ describe('AuthController', () => {
         user: {
           id: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           displayName: mockUser.displayName,
           avatar: mockUser.avatar,
           defaultTempo: mockUser.defaultTempo,
@@ -323,7 +315,6 @@ describe('AuthController', () => {
       mockReq.user = {
         id: 'user-123',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User'
       };
 
@@ -357,7 +348,6 @@ describe('AuthController', () => {
       mockReq.user = {
         id: 'user-123',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User'
       };
 
@@ -437,7 +427,6 @@ describe('AuthController', () => {
         user: {
           id: mockUser.id,
           email: mockUser.email,
-          username: mockUser.username,
           displayName: mockUser.displayName,
           avatar: mockUser.avatar
         }
@@ -508,7 +497,6 @@ describe('AuthController', () => {
       // Test registration
       mockReq.body = {
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         password: 'securepassword123'
       };
@@ -560,7 +548,6 @@ describe('AuthController', () => {
       // Assert
       expect(mockAuthService.register).toHaveBeenCalledWith({
         email: undefined,
-        username: undefined,
         displayName: undefined,
         password: undefined
       });
