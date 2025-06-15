@@ -217,6 +217,13 @@ export function requireProjectAccess(permission: 'read' | 'write' | 'admin') {
  * Rate limiting middleware for authentication endpoints
  */
 export function createAuthRateLimiter() {
+  // Skip rate limiting in test environment
+  if (process.env.NODE_ENV === 'test') {
+    return (req: Request, res: Response, next: NextFunction): void => {
+      next();
+    };
+  }
+
   // Using a simple in-memory rate limiter for now
   // In production, use Redis-based rate limiting
   const attempts = new Map<string, { count: number; resetTime: number }>();

@@ -108,46 +108,66 @@ music-collab/
 ./dev-tools/dev-env.sh reset    # Reset all data
 ```
 
-## 📊 Current Development Status
-
-### ✅ Phase 1: Project Scaffolding & Development Environment (COMPLETED)
-- Docker Compose development environment
-- Backend TypeScript/Express.js API structure
-- Frontend Vue.js 3 application with routing
-- Testing infrastructure (Jest, Vitest, Playwright)
-- Documentation system with markdown processing
-- CI/CD pipeline and development scripts
-
-### 🔄 Phase 2: Database Models & ORM Setup (IN PROGRESS)
-- PostgreSQL database schema design
-- TypeScript entity models
-- Database migrations and seeding
-- Basic CRUD operations
-
-### 📅 Upcoming Phases
-- **Phase 3**: User Authentication & Management
-- **Phase 4**: Project Management System  
-- **Phase 5**: Audio/MIDI Track Management
-- **Phase 6**: Real-time Collaboration
-- **Phase 7**: Audio Processing & Effects
-- **Phase 8**: AI Integration
-- **Phase 9**: Advanced Features & Polish
-- **Phase 10**: Production Deployment
-
 ## 🧪 Testing
 
+### Backend Testing
 ```bash
-# Run all tests
-npm run test:all
+cd backend
 
-# Backend tests
-cd backend && npm test
+# Unit tests only (excludes integration tests)
+npm run test:unit
 
-# Frontend tests  
-cd frontend && npm run test:unit
+# Integration tests (with real database)
+npm run test:integration
 
-# End-to-end tests
-cd e2e-tests && npm test
+# Test with coverage reports
+npm run test:coverage
+
+# Watch mode for development
+npm run test:watch
+
+# Database setup for integration tests
+npm run test:db:setup
+```
+
+### Frontend Testing
+```bash
+cd frontend
+
+# Unit tests with Vitest
+npm run test:unit
+
+# Tests with coverage
+npm run test:coverage
+
+# Type checking
+npm run type-check
+```
+
+### End-to-End Testing
+```bash
+cd e2e-tests
+
+# Run all E2E tests with Playwright
+npm test
+
+# Run tests in headed mode (browser visible)
+npx playwright test --headed
+
+# Run specific test file
+npx playwright test tests/music-platform.spec.ts
+```
+
+### Test Database Management
+```bash
+# Setup test database (automatically run with integration tests)
+cd backend && npm run test:db:setup
+
+# Reset main development database
+cd backend && npm run db:reset
+
+# View database in Prisma Studio
+cd backend && npm run db:studio
 ```
 
 ## 🤝 Contributing
@@ -192,4 +212,4 @@ cat .env
 
 ---
 
-*Last updated: June 14, 2025*
+*Last updated: June 15, 2025*

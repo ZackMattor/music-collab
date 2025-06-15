@@ -91,17 +91,65 @@ describe('AuthController', () => {
 
 ### 3. Test Categories & Coverage
 - **Unit Tests**: Individual functions/methods (aim for 90%+ coverage)
-- **Integration Tests**: Component interactions
+- **Integration Tests**: Component interactions with real database
 - **API Tests**: HTTP endpoints with supertest
 - **E2E Tests**: User journeys across the full application
 
-### 4. Testing Best Practices
+### 4. Integration Testing Standards
+**✅ REQUIRED**: Integration tests must use real database operations for authentication and RBAC validation.
+
+#### Test Database Setup
+```typescript
+// Use dedicated test database infrastructure
+import { TestIntegrationSetup } from './test-utils/test-integration-setup';
+import { DatabaseSeeder } from './test-utils/database-seeder';
+
+describe('Authentication Integration Tests', () => {
+  let seeder: DatabaseSeeder;
+
+  beforeAll(async () => {
+    await TestIntegrationSetup.beforeAll(); // Initialize test database
+    seeder = TestIntegrationSetup.getSeeder();
+  });
+
+  beforeEach(async () => {
+    await TestIntegrationSetup.beforeEach(); // Clean database state
+  });
+
+  afterAll(async () => {
+    await TestIntegrationSetup.afterAll(); // Cleanup connections
+  });
+});
+```
+
+#### Database Seeding for Tests
+```typescript
+// Create test users with real database operations
+const userData = {
+  email: 'test@musiccollab.test',
+  username: 'test_user',
+  displayName: 'Test User',
+  password: 'TestPassword123!'
+};
+
+const user = await seeder.createUser(userData);
+```
+
+#### Authentication Flow Testing
+- Test complete authentication flows with database persistence
+- Validate JWT tokens against actual user records
+- Test user registration, login, profile management, and account deletion
+- Verify proper error handling for invalid credentials and missing users
+- Test rate limiting bypass in test environment
+
+### 5. Testing Best Practices
 - Use descriptive test names that explain the behavior
 - Keep tests focused and atomic (one assertion per test when possible)
-- Mock external dependencies appropriately
+- Mock external dependencies appropriately (but use real database for integration tests)
 - Test both success and error cases
 - Include edge cases and boundary conditions
 - Maintain test isolation (no shared state between tests)
+- Disable rate limiting and other middleware in test environment
 
 ## 📋 Documentation Standards
 

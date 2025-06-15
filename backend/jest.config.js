@@ -25,4 +25,7 @@ module.exports = {
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
     '^@types/(.*)$': '<rootDir>/src/types/$1',
   },
+  setupFilesAfterEnv: ['<rootDir>/src/test-utils/jest-setup.ts'],
+  testTimeout: 30000,
+  setupFiles: ['<rootDir>/src/test-utils/test-env.ts'],
 };
