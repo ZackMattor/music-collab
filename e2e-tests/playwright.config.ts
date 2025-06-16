@@ -21,12 +21,19 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Global test timeout */
+  timeout: 30000,
+  /* Expect timeout */
+  expect: { timeout: 10000 },
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['line'],
+    ['html', { open: 'never' }]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5175',
+    baseURL: 'http://localhost:5173',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -74,14 +81,14 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run dev',
-      port: 5175,
+      url: 'http://localhost:5173',
       cwd: '../frontend',
       reuseExistingServer: !process.env.CI,
       timeout: 120000, // 2 minutes
     },
     {
       command: 'npm run dev',
-      port: 3000,
+      url: 'http://localhost:3000/health',
       cwd: '../backend',
       reuseExistingServer: !process.env.CI,
       timeout: 120000, // 2 minutes

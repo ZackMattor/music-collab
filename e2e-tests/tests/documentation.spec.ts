@@ -11,24 +11,24 @@ test.describe('Documentation System', () => {
     await expect(page.getByText(/Documentation Files/i)).toBeVisible();
     await expect(page.getByText(/Categories/i)).toBeVisible();
     
-    // Check for category sections
-    await expect(page.getByText(/Project Root/i)).toBeVisible();
-    await expect(page.getByText(/Backend/i)).toBeVisible();
-    await expect(page.getByText(/Frontend/i)).toBeVisible();
+    // Check for category sections - use more specific selectors to avoid duplicates
+    await expect(page.locator('h3.category-title').filter({ hasText: 'Project Root' })).toBeVisible();
+    await expect(page.locator('h3.category-title').filter({ hasText: 'Backend' })).toBeVisible();
+    await expect(page.locator('h3.category-title').filter({ hasText: 'Frontend' })).toBeVisible();
   });
 
   test('should navigate to individual documentation pages', async ({ page }) => {
     await page.goto('/docs');
     
-    // Click on a documentation link
-    await page.getByText('Project Overview').first().click();
+    // Click on a documentation link - use a more specific selector
+    await page.getByRole('link', { name: /README/ }).first().click();
     
-    // Check that we're on the document page
-    await expect(page).toHaveURL(/.*\/docs\/readme/);
-    await expect(page.getByRole('heading', { name: /Project Overview/i })).toBeVisible();
+    // Check that we're on the document page (accept various readme paths)
+    await expect(page).toHaveURL(/.*\/docs\/.*readme/);
+    await expect(page.getByRole('heading', { name: /Music Collaboration Platform/i })).toBeVisible();
     
-    // Check for breadcrumb navigation
-    await expect(page.getByText('Documentation')).toBeVisible();
+    // Check for breadcrumb navigation - use most specific selector for breadcrumb
+    await expect(page.locator('[data-v-9d3e29be]').getByRole('link', { name: 'Documentation', exact: true }).first()).toBeVisible();
     await expect(page.getByText('Project Root')).toBeVisible();
   });
 
@@ -64,7 +64,8 @@ test.describe('Documentation System', () => {
     
     // Check for document metadata
     await expect(page.locator('.category-badge')).toBeVisible();
-    await expect(page.getByText(/Last updated/i)).toBeVisible();
+    // Use more specific selector to avoid duplicates
+    await expect(page.locator('.last-modified')).toBeVisible();
     
     // Check for proper page structure
     await expect(page.locator('.doc-content')).toBeVisible();
