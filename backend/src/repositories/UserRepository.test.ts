@@ -29,7 +29,6 @@ describe('UserRepository', () => {
       const mockUser = {
         id: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Test User',
         passwordHash: 'hashedpassword',
         avatar: null,
@@ -61,8 +60,8 @@ describe('UserRepository', () => {
   describe('findMany', () => {
     it('should find users with default options', async () => {
       const mockUsers = [
-        { id: 'user-1', email: 'test1@example.com', username: 'user1' },
-        { id: 'user-2', email: 'test2@example.com', username: 'user2' },
+        { id: 'user-1', email: 'test1@example.com' },
+        { id: 'user-2', email: 'test2@example.com' },
       ];
 
       (mockPrisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
@@ -98,7 +97,6 @@ describe('UserRepository', () => {
     it('should create a new user', async () => {
       const createData: CreateUserData = {
         email: 'newuser@example.com',
-        username: 'newuser',
         displayName: 'New User',
         passwordHash: 'hashedpassword',
       };
@@ -120,7 +118,6 @@ describe('UserRepository', () => {
       expect(mockPrisma.user.create).toHaveBeenCalledWith({
         data: {
           email: createData.email,
-          username: createData.username,
           displayName: createData.displayName,
           passwordHash: createData.passwordHash,
           avatar: undefined,
@@ -134,7 +131,6 @@ describe('UserRepository', () => {
     it('should create user with custom preferences', async () => {
       const createData: CreateUserData = {
         email: 'newuser@example.com',
-        username: 'newuser',
         displayName: 'New User',
         passwordHash: 'hashedpassword',
         avatar: 'avatar-url',
@@ -149,7 +145,6 @@ describe('UserRepository', () => {
       expect(mockPrisma.user.create).toHaveBeenCalledWith({
         data: {
           email: createData.email,
-          username: createData.username,
           displayName: createData.displayName,
           passwordHash: createData.passwordHash,
           avatar: createData.avatar,
@@ -170,7 +165,6 @@ describe('UserRepository', () => {
       const mockUpdatedUser = {
         id: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         displayName: 'Updated Name',
         passwordHash: 'hashedpassword',
         avatar: null,
@@ -197,7 +191,6 @@ describe('UserRepository', () => {
       const mockDeletedUser = {
         id: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
       };
 
       (mockPrisma.user.delete as jest.Mock).mockResolvedValue(mockDeletedUser);
@@ -216,7 +209,6 @@ describe('UserRepository', () => {
       const mockUser = {
         id: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
       };
 
       (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
@@ -230,31 +222,11 @@ describe('UserRepository', () => {
     });
   });
 
-  describe('findByUsername', () => {
-    it('should find user by username', async () => {
-      const mockUser = {
-        id: 'user-1',
-        email: 'test@example.com',
-        username: 'testuser',
-      };
-
-      (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
-
-      const result = await userRepository.findByUsername('testuser');
-
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-        where: { username: 'testuser' }
-      });
-      expect(result).toEqual(mockUser);
-    });
-  });
-
   describe('findWithProjects', () => {
     it('should find user with their projects', async () => {
       const mockUserWithProjects = {
         id: 'user-1',
         email: 'test@example.com',
-        username: 'testuser',
         ownedProjects: [
           { id: 'project-1', name: 'My Project', ownerId: 'user-1' }
         ],
@@ -293,11 +265,11 @@ describe('UserRepository', () => {
       const mockCollaborators = [
         {
           id: 'collab-1',
-          user: { id: 'user-1', email: 'user1@example.com', username: 'user1' }
+          user: { id: 'user-1', email: 'user1@example.com' }
         },
         {
           id: 'collab-2',
-          user: { id: 'user-2', email: 'user2@example.com', username: 'user2' }
+          user: { id: 'user-2', email: 'user2@example.com' }
         }
       ];
 

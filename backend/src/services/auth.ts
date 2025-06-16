@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { UserRepository } from '../repositories/UserRepository';
+import { CreateUserData } from '../repositories/interfaces';
 
 export interface AuthTokens {
   accessToken: string;
@@ -11,14 +12,12 @@ export interface AuthTokens {
 export interface TokenPayload {
   userId: string;
   email: string;
-  username: string;
   type: 'access' | 'refresh';
 }
 
 export interface RegisterData {
   email: string;
-  username: string;
-  displayName: string;
+  displayName?: string;
   password: string;
 }
 
@@ -61,8 +60,7 @@ export class AuthService {
   generateTokens(user: User): AuthTokens {
     const payload = {
       userId: user.id,
-      email: user.email,
-      username: user.username
+      email: user.email
     };
 
     const accessToken = jwt.sign(
@@ -98,24 +96,21 @@ export class AuthService {
       throw new Error('User with this email already exists');
     }
 
-    const existingUserByUsername = await this.userRepository.findByUsername(data.username);
-    if (existingUserByUsername) {
-      throw new Error('User with this username already exists');
-    }
-
     // Validate input
     this.validateRegistrationData(data);
 
     // Hash password
     const passwordHash = await this.hashPassword(data.password);
 
-    // Create user
-    const user = await this.userRepository.create({
+    // Create user - treat empty displayName as undefined
+    const displayName = data.displayName?.trim() || undefined;
+    const createData: CreateUserData = {
       email: data.email,
-      username: data.username,
-      displayName: data.displayName,
-      passwordHash
-    });
+      passwordHash,
+      ...(displayName && { displayName })
+    };
+
+    const user = await this.userRepository.create(createData);
 
     // Generate tokens
     const tokens = this.generateTokens(user);
@@ -192,21 +187,13 @@ export class AuthService {
       throw new Error('Invalid email address');
     }
 
-    if (!data.username || data.username.length < 3 || data.username.length > 30) {
-      throw new Error('Username must be between 3 and 30 characters');
-    }
-
-    if (!data.displayName || data.displayName.length < 1 || data.displayName.length > 50) {
-      throw new Error('Display name must be between 1 and 50 characters');
+    // Display name is optional - only validate if provided and not empty
+    if (data.displayName !== undefined && data.displayName.trim() !== '' && data.displayName.length > 50) {
+      throw new Error('Display name must be 50 characters or less');
     }
 
     if (!data.password || data.password.length < 8) {
       throw new Error('Password must be at least 8 characters long');
-    }
-
-    // Username can only contain alphanumeric characters, underscores, and hyphens
-    if (!/^[a-zA-Z0-9_-]+$/.test(data.username)) {
-      throw new Error('Username can only contain letters, numbers, underscores, and hyphens');
     }
   }
 
