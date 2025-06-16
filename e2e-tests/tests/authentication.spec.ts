@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173')
+    await page.goto('http://localhost:5175')
   })
 
   test('should show sign in and sign up buttons when not authenticated', async ({ page }) => {
@@ -34,11 +34,11 @@ test.describe('Authentication Flow', () => {
     
     // Should show register form
     await expect(page.getByRole('heading', { name: 'Create Account' })).toBeVisible()
-    await expect(page.getByPlaceholder('Enter your display name')).toBeVisible()
+    await expect(page.getByPlaceholder('Enter your display name (optional)')).toBeVisible()
   })
 
   test('should be able to switch between login and register forms', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth')
+    await page.goto('http://localhost:5175/auth')
     
     // Start with login form
     await expect(page.getByRole('heading', { name: 'Sign In' })).toBeVisible()
@@ -53,7 +53,7 @@ test.describe('Authentication Flow', () => {
   })
 
   test('should validate form fields', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth')
+    await page.goto('http://localhost:5175/auth')
     
     // Try to submit empty login form
     await page.getByRole('button', { name: 'Sign In' }).click()
@@ -69,10 +69,10 @@ test.describe('Authentication Flow', () => {
   })
 
   test('should attempt registration and show loading state', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth?tab=register')
+    await page.goto('http://localhost:5175/auth?tab=register')
     
     // Fill in registration form
-    await page.getByPlaceholder('Enter your display name').fill('Test User')
+    await page.getByPlaceholder('Enter your display name (optional)').fill('Test User')
     await page.getByPlaceholder('Enter your email').fill('testuser@example.com')
     await page.getByPlaceholder('Enter your password').fill('password123')
     await page.getByPlaceholder('Confirm your password').fill('password123')
@@ -88,7 +88,7 @@ test.describe('Authentication Flow', () => {
   })
 
   test('should attempt login and show loading state', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth')
+    await page.goto('http://localhost:5175/auth')
     
     // Fill in login form
     await page.getByPlaceholder('Enter your email').fill('testuser@example.com')
@@ -107,14 +107,14 @@ test.describe('Authentication Flow', () => {
   test('should redirect to dashboard when accessing protected route while authenticated', async ({ page }) => {
     // This test would need to mock authentication state or use a test user
     // For now, we'll just verify the redirect to auth page happens
-    await page.goto('http://localhost:5173/dashboard')
+    await page.goto('http://localhost:5175/dashboard')
     
     // Should redirect to home with auth query params
     await expect(page).toHaveURL('/?redirected=true&returnTo=%2Fdashboard')
   })
 
   test('should show features section on auth page', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth')
+    await page.goto('http://localhost:5175/auth')
     
     // Should show features
     await expect(page.getByText('Why Music Collab?')).toBeVisible()
@@ -126,7 +126,7 @@ test.describe('Authentication Flow', () => {
   test('should be responsive on mobile', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
-    await page.goto('http://localhost:5173/auth')
+    await page.goto('http://localhost:5175/auth')
     
     // Features should be hidden on mobile
     await expect(page.getByText('Why Music Collab?')).not.toBeVisible()

@@ -153,18 +153,31 @@ describe('UserController', () => {
       });
     });
 
-    it('should validate empty display name', async () => {
+    it('should allow empty display name', async () => {
       // Arrange
+      const updatedUser = { ...mockUser, displayName: null };
       mockReq.body = { displayName: '' };
+      mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
       await userController.updateProfile(mockReq as Request, mockRes as Response);
 
       // Assert
-      expect(mockRes.status).toHaveBeenCalledWith(400);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
+        displayName: undefined
+      });
       expect(mockRes.json).toHaveBeenCalledWith({
-        error: 'Validation failed',
-        message: 'Display name must be a non-empty string'
+        message: 'Profile updated successfully',
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          displayName: updatedUser.displayName,
+          avatar: updatedUser.avatar,
+          defaultTempo: updatedUser.defaultTempo,
+          collaborationNotifications: updatedUser.collaborationNotifications,
+          createdAt: updatedUser.createdAt,
+          updatedAt: updatedUser.updatedAt
+        }
       });
     });
 

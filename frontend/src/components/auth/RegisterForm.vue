@@ -126,9 +126,9 @@ const isFormValid = computed(() => {
 const validateForm = () => {
   errors.value = {}
   
-  // Display name is optional, but if provided, validate length
-  if (form.value.displayName && (form.value.displayName.length < 1 || form.value.displayName.length > 50)) {
-    errors.value.displayName = 'Display name must be between 1 and 50 characters'
+  // Display name is optional, but if provided, validate max length only
+  if (form.value.displayName && form.value.displayName.length > 50) {
+    errors.value.displayName = 'Display name must be 50 characters or less'
   }
   
   if (!form.value.email) {

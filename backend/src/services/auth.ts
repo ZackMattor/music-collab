@@ -102,11 +102,12 @@ export class AuthService {
     // Hash password
     const passwordHash = await this.hashPassword(data.password);
 
-    // Create user
+    // Create user - treat empty displayName as undefined
+    const displayName = data.displayName?.trim() || undefined;
     const createData: CreateUserData = {
       email: data.email,
       passwordHash,
-      ...(data.displayName !== undefined && { displayName: data.displayName })
+      ...(displayName && { displayName })
     };
 
     const user = await this.userRepository.create(createData);
@@ -186,8 +187,9 @@ export class AuthService {
       throw new Error('Invalid email address');
     }
 
-    if (data.displayName !== undefined && (data.displayName.length < 1 || data.displayName.length > 50)) {
-      throw new Error('Display name must be between 1 and 50 characters');
+    // Display name is optional - only validate if provided and not empty
+    if (data.displayName !== undefined && data.displayName.trim() !== '' && data.displayName.length > 50) {
+      throw new Error('Display name must be 50 characters or less');
     }
 
     if (!data.password || data.password.length < 8) {

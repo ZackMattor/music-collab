@@ -77,12 +77,14 @@ export default defineConfig({
       port: 5175,
       cwd: '../frontend',
       reuseExistingServer: !process.env.CI,
+      timeout: 120000, // 2 minutes
     },
     {
       command: 'npm run dev',
       port: 3000,
       cwd: '../backend',
       reuseExistingServer: !process.env.CI,
+      timeout: 120000, // 2 minutes
     },
   ],
 });

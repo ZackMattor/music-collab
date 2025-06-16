@@ -82,13 +82,14 @@ export class UserController {
       
       // Validate and extract update data
       if (req.body.displayName !== undefined) {
-        if (typeof req.body.displayName !== 'string' || req.body.displayName.trim().length === 0) {
+        if (typeof req.body.displayName !== 'string') {
           res.status(400).json({
             error: 'Validation failed',
-            message: 'Display name must be a non-empty string'
+            message: 'Display name must be a string'
           });
           return;
         }
+        // Allow empty string, but validate max length if provided
         if (req.body.displayName.length > 50) {
           res.status(400).json({
             error: 'Validation failed',
@@ -96,7 +97,8 @@ export class UserController {
           });
           return;
         }
-        updateData.displayName = req.body.displayName.trim();
+        // Store empty string as undefined for consistency
+        updateData.displayName = req.body.displayName.trim() || undefined;
       }
 
       if (req.body.avatar !== undefined) {

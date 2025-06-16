@@ -221,9 +221,9 @@ const initializeForm = () => {
 const validateForm = () => {
   errors.value = {}
   
-  // Display name is optional, but if provided, validate length
-  if (profileForm.value.displayName && (profileForm.value.displayName.length < 1 || profileForm.value.displayName.length > 50)) {
-    errors.value.displayName = 'Display name must be between 1 and 50 characters'
+  // Display name is optional, but if provided, validate max length only
+  if (profileForm.value.displayName && profileForm.value.displayName.length > 50) {
+    errors.value.displayName = 'Display name must be 50 characters or less'
   }
   
   return Object.keys(errors.value).length === 0
