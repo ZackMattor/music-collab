@@ -15,7 +15,7 @@ export class AuthController {
    * Register a new user
    * POST /api/auth/register
    */
-  register = async (req: Request, res: Response): Promise<void> => {
+  register = async (req: any, res: any): Promise<void> => {
     try {
       const registerData: RegisterData = {
         email: req.body.email,
@@ -73,7 +73,7 @@ export class AuthController {
    * Login user
    * POST /api/auth/login
    */
-  login = async (req: Request, res: Response): Promise<void> => {
+  login = async (req: any, res: any): Promise<void> => {
     try {
       const loginData: LoginData = {
         email: req.body.email,
@@ -113,7 +113,7 @@ export class AuthController {
    * Refresh access token
    * POST /api/auth/refresh
    */
-  refreshToken = async (req: Request, res: Response): Promise<void> => {
+  refreshToken = async (req: any, res: any): Promise<void> => {
     try {
       const { refreshToken } = req.body;
 
@@ -145,7 +145,7 @@ export class AuthController {
    * Get current user profile
    * GET /api/auth/profile
    */
-  getProfile = async (req: Request, res: Response): Promise<void> => {
+  getProfile = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -172,7 +172,7 @@ export class AuthController {
    * Logout user (client-side token invalidation)
    * POST /api/auth/logout
    */
-  logout = async (req: Request, res: Response): Promise<void> => {
+  logout = async (req: any, res: any): Promise<void> => {
     try {
       // Since we're using stateless JWT tokens, logout is primarily handled client-side
       // The client should remove the tokens from storage
@@ -193,7 +193,7 @@ export class AuthController {
    * Validate token endpoint (for client-side token verification)
    * POST /api/auth/validate
    */
-  validateToken = async (req: Request, res: Response): Promise<void> => {
+  validateToken = async (req: any, res: any): Promise<void> => {
     try {
       const { token } = req.body;
 

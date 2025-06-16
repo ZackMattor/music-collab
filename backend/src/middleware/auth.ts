@@ -3,19 +3,6 @@ import { AuthService } from '../services/auth';
 import { UserRepository } from '../repositories/UserRepository';
 import { PrismaClient } from '@prisma/client';
 
-// Extend Express Request interface to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        displayName: string | null;
-      };
-    }
-  }
-}
-
 export interface AuthMiddlewareOptions {
   optional?: boolean; // If true, don't throw error if no token
 }
@@ -29,7 +16,7 @@ export function createAuthMiddleware(prisma: PrismaClient) {
   const authService = new AuthService(userRepository);
 
   return (options: AuthMiddlewareOptions = {}) => {
-    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    return async (req: any, res: any, next: NextFunction): Promise<void> => {
       try {
         // Extract token from Authorization header
         const authHeader = req.headers.authorization;
@@ -79,7 +66,7 @@ export function createAuthMiddleware(prisma: PrismaClient) {
  */
 export function createProjectAccessMiddleware(prisma: PrismaClient) {
   return (permission: 'read' | 'write' | 'admin') => {
-    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    return async (req: any, res: any, next: NextFunction): Promise<void> => {
       try {
         if (!req.user) {
           res.status(401).json({
@@ -177,7 +164,7 @@ function checkPermissionLevel(userRole: string, requiredPermission: 'read' | 'wr
  * Legacy function maintained for backward compatibility
  */
 export function requireProjectAccess(_permission: 'read' | 'write' | 'admin') {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return async (req: any, res: any, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -217,7 +204,7 @@ export function requireProjectAccess(_permission: 'read' | 'write' | 'admin') {
 export function createAuthRateLimiter() {
   // Skip rate limiting in test environment
   if (process.env.NODE_ENV === 'test') {
-    return (req: Request, res: Response, next: NextFunction): void => {
+    return (req: any, res: any, next: NextFunction): void => {
       next();
     };
   }
@@ -228,7 +215,7 @@ export function createAuthRateLimiter() {
   const maxAttempts = 5;
   const windowMs = 15 * 60 * 1000; // 15 minutes
 
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: any, res: any, next: NextFunction): void => {
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
     const now = Date.now();
     
@@ -264,7 +251,7 @@ export function createAuthRateLimiter() {
  * Middleware to validate request body for authentication endpoints
  */
 export function validateAuthRequest(requiredFields: string[]) {
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: any, res: any, next: NextFunction): void => {
     const missingFields = requiredFields.filter(field => !req.body[field]);
     
     if (missingFields.length > 0) {

@@ -18,7 +18,7 @@ export class UserController {
    * Get current user profile (extended version)
    * GET /api/v1/users/profile
    */
-  getProfile = async (req: Request, res: Response): Promise<void> => {
+  getProfile = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -68,7 +68,7 @@ export class UserController {
    * Update user profile
    * PUT /api/v1/users/profile
    */
-  updateProfile = async (req: Request, res: Response): Promise<void> => {
+  updateProfile = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -153,7 +153,7 @@ export class UserController {
    * Get user preferences
    * GET /api/v1/users/preferences
    */
-  getPreferences = async (req: Request, res: Response): Promise<void> => {
+  getPreferences = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -195,7 +195,7 @@ export class UserController {
    * Update user preferences
    * PUT /api/v1/users/preferences
    */
-  updatePreferences = async (req: Request, res: Response): Promise<void> => {
+  updatePreferences = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -264,7 +264,7 @@ export class UserController {
    * Update user avatar
    * PUT /api/v1/users/avatar
    */
-  updateAvatar = async (req: Request, res: Response): Promise<void> => {
+  updateAvatar = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -328,7 +328,7 @@ export class UserController {
    * Delete user account
    * DELETE /api/v1/users/account
    */
-  deleteAccount = async (req: Request, res: Response): Promise<void> => {
+  deleteAccount = async (req: any, res: any): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({

@@ -3,11 +3,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
-import { config } from '@config/index';
-import { errorHandler } from '@middleware/errorHandler';
-import { notFoundHandler } from '@middleware/notFoundHandler';
-import { createApiRoutes } from '@routes/index';
-import { prisma } from '@services/database';
+import { config } from './config/index';
+import { errorHandler } from './middleware/errorHandler';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { createApiRoutes } from './routes/index';
+import { prisma } from './services/database';
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.use(compression());
 app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (req: any, res: any) => {
   res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),
