@@ -5,6 +5,7 @@ import {
   validateAuthRequest
 } from './auth';
 import { AuthService } from '../services/auth';
+import { AuthenticatedRequest } from '../types/express';
 
 // Mock dependencies
 jest.mock('../services/auth');
@@ -53,10 +54,12 @@ describe('Auth Middleware', () => {
 
   describe('createProjectAccessMiddleware', () => {
     beforeEach(() => {
-      mockReq.user = {
+      (mockReq as Partial<AuthenticatedRequest>).user = {
         id: 'user1',
         email: 'test@example.com',
-        displayName: 'Test User'
+        displayName: 'Test User',
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
     });
 
@@ -74,7 +77,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('admin')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('admin')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockPrisma.project.findUnique).toHaveBeenCalledWith({
@@ -104,7 +107,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('write')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('write')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockPrisma.projectCollaborator.findUnique).toHaveBeenCalledWith({
@@ -139,7 +142,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('write')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('write')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(403);
@@ -165,7 +168,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('read')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('read')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(403);
@@ -184,7 +187,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('read')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('read')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(404);
@@ -197,11 +200,11 @@ describe('Auth Middleware', () => {
 
     it('should require authentication', async () => {
       // Arrange
-      delete mockReq.user; // Remove user property
+      delete (mockReq as Partial<AuthenticatedRequest>).user; // Remove user property
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('read')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('read')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -217,7 +220,7 @@ describe('Auth Middleware', () => {
       const projectAccessMiddleware = createProjectAccessMiddleware(mockPrisma);
 
       // Act
-      await projectAccessMiddleware('read')(mockReq as Request, mockRes as Response, mockNext);
+      await projectAccessMiddleware('read')(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -240,7 +243,7 @@ describe('Auth Middleware', () => {
       const validator = validateAuthRequest(['email', 'password']);
 
       // Act
-      validator(mockReq as Request, mockRes as Response, mockNext);
+      validator(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockNext).toHaveBeenCalled();
@@ -257,7 +260,7 @@ describe('Auth Middleware', () => {
       const validator = validateAuthRequest(['email', 'password']);
 
       // Act
-      validator(mockReq as Request, mockRes as Response, mockNext);
+      validator(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -279,7 +282,7 @@ describe('Auth Middleware', () => {
       const validator = validateAuthRequest(['email', 'password']);
 
       // Act
-      validator(mockReq as Request, mockRes as Response, mockNext);
+      validator(mockReq as AuthenticatedRequest, mockRes as Response, mockNext);
 
       // Assert
       expect(mockReq.body.email).toBe('test@example.com');

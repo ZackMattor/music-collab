@@ -1,6 +1,6 @@
 import { Project } from '@prisma/client';
 import { ProjectRepository } from '../repositories/ProjectRepository';
-import { CreateProjectData, UpdateProjectData } from '../repositories/interfaces';
+import { CreateProjectData, UpdateProjectData, ProjectWithStems } from '../repositories/interfaces';
 
 export class ProjectService {
   constructor(private projectRepository: ProjectRepository) {}
@@ -55,7 +55,7 @@ export class ProjectService {
   /**
    * Get project with stems and collaborators
    */
-  async getProjectWithDetails(id: string) {
+  async getProjectWithDetails(id: string): Promise<ProjectWithStems | null> {
     return this.projectRepository.findWithStems(id);
   }
 

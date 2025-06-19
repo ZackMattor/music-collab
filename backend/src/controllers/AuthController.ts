@@ -1,7 +1,16 @@
-import { Request, Response } from 'express';
 import { AuthService, RegisterData, LoginData } from '../services/auth';
 import { UserRepository } from '../repositories/UserRepository';
 import { PrismaClient } from '@prisma/client';
+import { Request, Response } from 'express';
+
+// Authenticated request interface
+interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    displayName: string;
+  };
+}
 
 export class AuthController {
   private authService: AuthService;
@@ -15,7 +24,7 @@ export class AuthController {
    * Register a new user
    * POST /api/auth/register
    */
-  register = async (req: any, res: any): Promise<void> => {
+  register = async (req: Request, res: Response): Promise<void> => {
     try {
       const registerData: RegisterData = {
         email: req.body.email,
@@ -73,7 +82,7 @@ export class AuthController {
    * Login user
    * POST /api/auth/login
    */
-  login = async (req: any, res: any): Promise<void> => {
+  login = async (req: Request, res: Response): Promise<void> => {
     try {
       const loginData: LoginData = {
         email: req.body.email,
@@ -113,7 +122,7 @@ export class AuthController {
    * Refresh access token
    * POST /api/auth/refresh
    */
-  refreshToken = async (req: any, res: any): Promise<void> => {
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
     try {
       const { refreshToken } = req.body;
 
@@ -145,7 +154,7 @@ export class AuthController {
    * Get current user profile
    * GET /api/auth/profile
    */
-  getProfile = async (req: any, res: any): Promise<void> => {
+  getProfile = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -172,7 +181,7 @@ export class AuthController {
    * Logout user (client-side token invalidation)
    * POST /api/auth/logout
    */
-  logout = async (req: any, res: any): Promise<void> => {
+  logout = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       // Since we're using stateless JWT tokens, logout is primarily handled client-side
       // The client should remove the tokens from storage
@@ -193,7 +202,7 @@ export class AuthController {
    * Validate token endpoint (for client-side token verification)
    * POST /api/auth/validate
    */
-  validateToken = async (req: any, res: any): Promise<void> => {
+  validateToken = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const { token } = req.body;
 

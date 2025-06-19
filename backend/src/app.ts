@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -29,7 +29,7 @@ app.use(compression());
 app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
 
 // Health check endpoint
-app.get('/health', (req: any, res: any) => {
+app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),

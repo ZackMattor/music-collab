@@ -1,16 +1,8 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ProjectController } from './ProjectController';
 import { ProjectService } from '../services/ProjectService';
 import { Project } from '@prisma/client';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    displayName: string;
-    createdAt: Date;
-  };
-}
+import { AuthenticatedRequest } from '../types/express';
 
 // Mock ProjectService
 const mockProjectService = {
@@ -33,7 +25,7 @@ const mockResponse = {
 
 describe('ProjectController', () => {
   let projectController: ProjectController;
-  let mockReq: any;
+  let mockReq: Partial<AuthenticatedRequest>;
   let mockRes: Response;
 
   beforeEach(() => {
@@ -43,7 +35,9 @@ describe('ProjectController', () => {
         id: 'user-1',
         email: 'test@example.com',
         displayName: 'Test User',
+        avatar: null,
         createdAt: new Date(),
+        updatedAt: new Date(),
       },
       query: {},
       params: {},
@@ -61,7 +55,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getUserProjects as jest.Mock).mockResolvedValue(mockProjects);
 
-      await projectController.getProjects(mockReq as any, mockRes);
+      await projectController.getProjects(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.getUserProjects).toHaveBeenCalledWith('user-1');
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -83,7 +77,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getOwnedProjects as jest.Mock).mockResolvedValue(mockProjects);
 
-      await projectController.getProjects(mockReq as any, mockRes);
+      await projectController.getProjects(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.getOwnedProjects).toHaveBeenCalledWith('user-1');
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -105,7 +99,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getPublicProjects as jest.Mock).mockResolvedValue(mockProjects);
 
-      await projectController.getProjects(mockReq as any, mockRes);
+      await projectController.getProjects(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.getPublicProjects).toHaveBeenCalled();
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -120,9 +114,9 @@ describe('ProjectController', () => {
     });
 
     it('should return 401 if user not authenticated', async () => {
-      delete (mockReq as any).user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
 
-      await projectController.getProjects(mockReq as any, mockRes);
+      await projectController.getProjects(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(401);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -136,7 +130,7 @@ describe('ProjectController', () => {
         new Error('Database error')
       );
 
-      await projectController.getProjects(mockReq as any, mockRes);
+      await projectController.getProjects(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -156,7 +150,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getProjectById as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.getProject(mockReq as any, mockRes);
+      await projectController.getProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.getProjectById).toHaveBeenCalledWith('project-1');
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -180,7 +174,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getProjectWithDetails as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.getProject(mockReq as any, mockRes);
+      await projectController.getProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.getProjectWithDetails).toHaveBeenCalledWith('project-1');
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -197,7 +191,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.getProjectById as jest.Mock).mockResolvedValue(null);
 
-      await projectController.getProject(mockReq as any, mockRes);
+      await projectController.getProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -227,7 +221,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.createProject as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.createProject(mockReq as any, mockRes);
+      await projectController.createProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.createProject).toHaveBeenCalledWith({
         name: 'New Project',
@@ -251,7 +245,7 @@ describe('ProjectController', () => {
     it('should return 400 if name is missing', async () => {
       mockReq.body = { description: 'A project without name' };
 
-      await projectController.createProject(mockReq as any, mockRes);
+      await projectController.createProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -267,7 +261,7 @@ describe('ProjectController', () => {
         new Error('Project name must be 100 characters or less')
       );
 
-      await projectController.createProject(mockReq as any, mockRes);
+      await projectController.createProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -277,10 +271,10 @@ describe('ProjectController', () => {
     });
 
     it('should return 401 if user not authenticated', async () => {
-      delete (mockReq as any).user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
       mockReq.body = { name: 'New Project' };
 
-      await projectController.createProject(mockReq as any, mockRes);
+      await projectController.createProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(401);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -306,7 +300,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.updateProject as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.updateProject(mockReq as any, mockRes);
+      await projectController.updateProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.updateProject).toHaveBeenCalledWith('project-1', {
         name: 'Updated Project',
@@ -335,7 +329,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.updateProject as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.updateProject(mockReq as any, mockRes);
+      await projectController.updateProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.updateProject).toHaveBeenCalledWith('project-1', {
         name: 'Updated Project',
@@ -351,7 +345,7 @@ describe('ProjectController', () => {
         new Error('Project name cannot be empty')
       );
 
-      await projectController.updateProject(mockReq as any, mockRes);
+      await projectController.updateProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -372,7 +366,7 @@ describe('ProjectController', () => {
 
       (mockProjectService.deleteProject as jest.Mock).mockResolvedValue(mockProject);
 
-      await projectController.deleteProject(mockReq as any, mockRes);
+      await projectController.deleteProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockProjectService.deleteProject).toHaveBeenCalledWith('project-1');
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -389,10 +383,10 @@ describe('ProjectController', () => {
     });
 
     it('should return 401 if user not authenticated', async () => {
-      delete (mockReq as any).user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
       mockReq.params = { projectId: 'project-1' };
 
-      await projectController.deleteProject(mockReq as any, mockRes);
+      await projectController.deleteProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(401);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -408,7 +402,7 @@ describe('ProjectController', () => {
         new Error('Database error')
       );
 
-      await projectController.deleteProject(mockReq as any, mockRes);
+      await projectController.deleteProject(mockReq as AuthenticatedRequest, mockRes);
 
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith({

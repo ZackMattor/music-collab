@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth';
 import { UserRepository } from '../repositories/UserRepository';
 import { PrismaClient } from '@prisma/client';
+import { AuthenticatedRequest } from '../types/express';
 
 export interface AuthMiddlewareOptions {
   optional?: boolean; // If true, don't throw error if no token
@@ -16,7 +17,7 @@ export function createAuthMiddleware(prisma: PrismaClient) {
   const authService = new AuthService(userRepository);
 
   return (options: AuthMiddlewareOptions = {}) => {
-    return async (req: any, res: any, next: NextFunction): Promise<void> => {
+    return async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
       try {
         // Extract token from Authorization header
         const authHeader = req.headers.authorization;
@@ -41,7 +42,10 @@ export function createAuthMiddleware(prisma: PrismaClient) {
         req.user = {
           id: user.id,
           email: user.email,
-          displayName: user.displayName
+          displayName: user.displayName || 'Anonymous',
+          avatar: user.avatar,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
         };
 
         next();
@@ -66,7 +70,7 @@ export function createAuthMiddleware(prisma: PrismaClient) {
  */
 export function createProjectAccessMiddleware(prisma: PrismaClient) {
   return (permission: 'read' | 'write' | 'admin') => {
-    return async (req: any, res: any, next: NextFunction): Promise<void> => {
+    return async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
       try {
         if (!req.user) {
           res.status(401).json({
@@ -164,7 +168,7 @@ function checkPermissionLevel(userRole: string, requiredPermission: 'read' | 'wr
  * Legacy function maintained for backward compatibility
  */
 export function requireProjectAccess(_permission: 'read' | 'write' | 'admin') {
-  return async (req: any, res: any, next: NextFunction): Promise<void> => {
+  return async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -204,7 +208,7 @@ export function requireProjectAccess(_permission: 'read' | 'write' | 'admin') {
 export function createAuthRateLimiter() {
   // Skip rate limiting in test environment
   if (process.env.NODE_ENV === 'test') {
-    return (req: any, res: any, next: NextFunction): void => {
+    return (req: Request, res: Response, next: NextFunction): void => {
       next();
     };
   }
@@ -215,7 +219,7 @@ export function createAuthRateLimiter() {
   const maxAttempts = 5;
   const windowMs = 15 * 60 * 1000; // 15 minutes
 
-  return (req: any, res: any, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
     const now = Date.now();
     
@@ -251,7 +255,7 @@ export function createAuthRateLimiter() {
  * Middleware to validate request body for authentication endpoints
  */
 export function validateAuthRequest(requiredFields: string[]) {
-  return (req: any, res: any, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const missingFields = requiredFields.filter(field => !req.body[field]);
     
     if (missingFields.length > 0) {

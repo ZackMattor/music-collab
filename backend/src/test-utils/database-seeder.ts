@@ -191,4 +191,15 @@ export class DatabaseSeeder {
       users,
     };
   }
+
+  /**
+   * Clean database by deleting all test data
+   */
+  async cleanDatabase(): Promise<void> {
+    // Delete in reverse order of dependencies
+    await this.prisma.projectCollaborator.deleteMany();
+    await this.prisma.stem.deleteMany();
+    await this.prisma.project.deleteMany();
+    await this.prisma.user.deleteMany();
+  }
 }

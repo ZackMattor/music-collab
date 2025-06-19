@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
 import { ProjectService } from '../services/ProjectService';
 import { CreateProjectData, UpdateProjectData } from '../repositories/interfaces';
+import { AuthenticatedRequest, TypedResponse } from '../types/express';
 
 export class ProjectController {
   constructor(private projectService: ProjectService) {}
@@ -9,7 +9,7 @@ export class ProjectController {
    * GET /api/v1/projects
    * Get all projects accessible by the authenticated user
    */
-  getProjects = async (req: any, res: any): Promise<void> => {
+  getProjects = async (req: AuthenticatedRequest, res: TypedResponse): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -58,7 +58,7 @@ export class ProjectController {
    * GET /api/v1/projects/:projectId
    * Get project details by ID
    */
-  getProject = async (req: any, res: any): Promise<void> => {
+  getProject = async (req: AuthenticatedRequest, res: TypedResponse): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -115,7 +115,7 @@ export class ProjectController {
    * POST /api/v1/projects
    * Create a new project
    */
-  createProject = async (req: any, res: any): Promise<void> => {
+  createProject = async (req: AuthenticatedRequest, res: TypedResponse): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -183,7 +183,7 @@ export class ProjectController {
    * PUT /api/v1/projects/:projectId
    * Update an existing project
    */
-  updateProject = async (req: any, res: any): Promise<void> => {
+  updateProject = async (req: AuthenticatedRequest, res: TypedResponse): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -267,7 +267,7 @@ export class ProjectController {
    * DELETE /api/v1/projects/:projectId
    * Delete a project (owner only)
    */
-  deleteProject = async (req: any, res: any): Promise<void> => {
+  deleteProject = async (req: AuthenticatedRequest, res: TypedResponse): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({

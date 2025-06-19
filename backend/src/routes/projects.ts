@@ -26,8 +26,8 @@ export function createProjectRoutes(prisma: PrismaClient): Router {
    * - type: 'all' (default), 'owned', 'public'
    */
   router.get('/', 
-    authMiddleware(),
-    projectController.getProjects
+    authMiddleware() as any,
+    projectController.getProjects as any
   );
 
   /**
@@ -36,8 +36,8 @@ export function createProjectRoutes(prisma: PrismaClient): Router {
    * Body: { name, description?, tempo?, timeSignatureNumerator?, timeSignatureDenominator?, isPublic? }
    */
   router.post('/',
-    authMiddleware(),
-    projectController.createProject
+    authMiddleware() as any,
+    projectController.createProject as any
   );
 
   /**
@@ -47,9 +47,9 @@ export function createProjectRoutes(prisma: PrismaClient): Router {
    * - includeDetails: 'true' to include stems and collaborators
    */
   router.get('/:projectId',
-    authMiddleware(),
-    projectAccessMiddleware('read'),
-    projectController.getProject
+    authMiddleware() as any,
+    projectAccessMiddleware('read') as any,
+    projectController.getProject as any
   );
 
   /**
@@ -58,9 +58,9 @@ export function createProjectRoutes(prisma: PrismaClient): Router {
    * Body: { name?, description?, tempo?, timeSignatureNumerator?, timeSignatureDenominator?, length?, isActive?, isPublic? }
    */
   router.put('/:projectId',
-    authMiddleware(),
-    projectAccessMiddleware('write'),
-    projectController.updateProject
+    authMiddleware() as any,
+    projectAccessMiddleware('write') as any,
+    projectController.updateProject as any
   );
 
   /**
@@ -68,9 +68,9 @@ export function createProjectRoutes(prisma: PrismaClient): Router {
    * Delete project (requires admin access - owner only)
    */
   router.delete('/:projectId',
-    authMiddleware(),
-    projectAccessMiddleware('admin'),
-    projectController.deleteProject
+    authMiddleware() as any,
+    projectAccessMiddleware('admin') as any,
+    projectController.deleteProject as any
   );
 
   return router;
