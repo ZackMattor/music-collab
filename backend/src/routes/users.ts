@@ -23,37 +23,37 @@ export function createUserRoutes(prisma: PrismaClient): Router {
    * GET /api/v1/users/profile
    * Get current user's extended profile
    */
-  router.get('/profile', userController.getProfile as any);
+  router.get('/profile', userController.getProfile as RequestHandler);
 
   /**
    * PUT /api/v1/users/profile  
    * Update current user's profile (displayName, avatar)
    */
-  router.put('/profile', userController.updateProfile as any);
+  router.put('/profile', userController.updateProfile as RequestHandler);
 
   /**
    * GET /api/v1/users/preferences
    * Get current user's preferences (tempo, notifications)
    */
-  router.get('/preferences', userController.getPreferences as any);
+  router.get('/preferences', userController.getPreferences as RequestHandler);
 
   /**
    * PUT /api/v1/users/preferences
    * Update current user's preferences
    */
-  router.put('/preferences', userController.updatePreferences as any);
+  router.put('/preferences', userController.updatePreferences as RequestHandler);
 
   /**
    * PUT /api/v1/users/avatar
    * Update current user's avatar URL
    */
-  router.put('/avatar', userController.updateAvatar as any);
+  router.put('/avatar', userController.updateAvatar as RequestHandler);
 
   /**
    * DELETE /api/v1/users/account
    * Delete current user's account (requires password confirmation)
    */
-  router.delete('/account', userController.deleteAccount as any);
+  router.delete('/account', userController.deleteAccount as RequestHandler);
 
   return router;
 }
