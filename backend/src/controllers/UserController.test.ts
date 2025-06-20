@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserController } from './UserController';
 import { UserRepository } from '../repositories/UserRepository';
 import { User } from '@prisma/client';
+import { AuthenticatedRequest } from '../types/express';
 
 // Mock the UserRepository
 jest.mock('../repositories/UserRepository');
@@ -29,12 +30,16 @@ describe('UserController', () => {
     userController = new UserController(mockUserRepository);
 
     mockReq = {
-      user: {
-        id: 'user-123',
-        email: 'test@example.com',
-        displayName: 'Test User'
-      },
       body: {}
+    } as Partial<AuthenticatedRequest>;
+    
+    (mockReq as Partial<AuthenticatedRequest>).user = {
+      id: 'user-123',
+      email: 'test@example.com',
+      displayName: 'Test User',
+      avatar: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
     mockRes = {
@@ -51,7 +56,7 @@ describe('UserController', () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
       // Act
-      await userController.getProfile(mockReq as Request, mockRes as Response);
+      await userController.getProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.findById).toHaveBeenCalledWith('user-123');
@@ -72,10 +77,10 @@ describe('UserController', () => {
 
     it('should return 401 when user is not authenticated', async () => {
       // Arrange
-      delete mockReq.user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
 
       // Act
-      await userController.getProfile(mockReq as Request, mockRes as Response);
+      await userController.getProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -90,7 +95,7 @@ describe('UserController', () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
       // Act
-      await userController.getProfile(mockReq as Request, mockRes as Response);
+      await userController.getProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(404);
@@ -105,7 +110,7 @@ describe('UserController', () => {
       mockUserRepository.findById.mockRejectedValue(new Error('Database error'));
 
       // Act
-      await userController.getProfile(mockReq as Request, mockRes as Response);
+      await userController.getProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(500);
@@ -124,7 +129,7 @@ describe('UserController', () => {
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
-      await userController.updateProfile(mockReq as Request, mockRes as Response);
+      await userController.updateProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.update).toHaveBeenCalledWith('user-123', {
@@ -143,7 +148,7 @@ describe('UserController', () => {
       mockReq.body = { displayName: 'a'.repeat(51) };
 
       // Act
-      await userController.updateProfile(mockReq as Request, mockRes as Response);
+      await userController.updateProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -160,7 +165,7 @@ describe('UserController', () => {
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
-      await userController.updateProfile(mockReq as Request, mockRes as Response);
+      await userController.updateProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
@@ -188,7 +193,7 @@ describe('UserController', () => {
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
-      await userController.updateProfile(mockReq as Request, mockRes as Response);
+      await userController.updateProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.update).toHaveBeenCalledWith('user-123', {
@@ -201,7 +206,7 @@ describe('UserController', () => {
       mockReq.body = {};
 
       // Act
-      await userController.updateProfile(mockReq as Request, mockRes as Response);
+      await userController.updateProfile(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -218,7 +223,7 @@ describe('UserController', () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
       // Act
-      await userController.getPreferences(mockReq as Request, mockRes as Response);
+      await userController.getPreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -232,10 +237,10 @@ describe('UserController', () => {
 
     it('should return 401 when not authenticated', async () => {
       // Arrange
-      delete mockReq.user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
 
       // Act
-      await userController.getPreferences(mockReq as Request, mockRes as Response);
+      await userController.getPreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -254,7 +259,7 @@ describe('UserController', () => {
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
-      await userController.updatePreferences(mockReq as Request, mockRes as Response);
+      await userController.updatePreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.update).toHaveBeenCalledWith('user-123', {
@@ -275,7 +280,7 @@ describe('UserController', () => {
       mockReq.body = { defaultTempo: 300 };
 
       // Act
-      await userController.updatePreferences(mockReq as Request, mockRes as Response);
+      await userController.updatePreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -290,7 +295,7 @@ describe('UserController', () => {
       mockReq.body = { defaultTempo: 30 };
 
       // Act
-      await userController.updatePreferences(mockReq as Request, mockRes as Response);
+      await userController.updatePreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -305,7 +310,7 @@ describe('UserController', () => {
       mockReq.body = { collaborationNotifications: 'invalid' };
 
       // Act
-      await userController.updatePreferences(mockReq as Request, mockRes as Response);
+      await userController.updatePreferences(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -324,7 +329,7 @@ describe('UserController', () => {
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
       // Act
-      await userController.updateAvatar(mockReq as Request, mockRes as Response);
+      await userController.updateAvatar(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.update).toHaveBeenCalledWith('user-123', {
@@ -345,7 +350,7 @@ describe('UserController', () => {
       mockReq.body = {};
 
       // Act
-      await userController.updateAvatar(mockReq as Request, mockRes as Response);
+      await userController.updateAvatar(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -360,7 +365,7 @@ describe('UserController', () => {
       mockReq.body = { avatarUrl: 123 };
 
       // Act
-      await userController.updateAvatar(mockReq as Request, mockRes as Response);
+      await userController.updateAvatar(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -375,7 +380,7 @@ describe('UserController', () => {
       mockReq.body = { avatarUrl: 'not-a-valid-url' };
 
       // Act
-      await userController.updateAvatar(mockReq as Request, mockRes as Response);
+      await userController.updateAvatar(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -394,7 +399,7 @@ describe('UserController', () => {
       mockUserRepository.delete.mockResolvedValue(mockUser);
 
       // Act
-      await userController.deleteAccount(mockReq as Request, mockRes as Response);
+      await userController.deleteAccount(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockUserRepository.delete).toHaveBeenCalledWith('user-123');
@@ -408,7 +413,7 @@ describe('UserController', () => {
       mockReq.body = {};
 
       // Act
-      await userController.deleteAccount(mockReq as Request, mockRes as Response);
+      await userController.deleteAccount(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -420,10 +425,10 @@ describe('UserController', () => {
 
     it('should return 401 when not authenticated', async () => {
       // Arrange
-      delete mockReq.user;
+      delete (mockReq as Partial<AuthenticatedRequest>).user;
 
       // Act
-      await userController.deleteAccount(mockReq as Request, mockRes as Response);
+      await userController.deleteAccount(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -439,7 +444,7 @@ describe('UserController', () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
       // Act
-      await userController.deleteAccount(mockReq as Request, mockRes as Response);
+      await userController.deleteAccount(mockReq as AuthenticatedRequest, mockRes as Response);
 
       // Assert
       expect(mockRes.status).toHaveBeenCalledWith(404);

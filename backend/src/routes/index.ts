@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { createAuthRoutes } from './auth';
 import { createUserRoutes } from './users';
+import { createProjectRoutes } from './projects';
 
 export function createApiRoutes(prisma: PrismaClient): Router {
   const router = Router();
@@ -29,9 +30,8 @@ export function createApiRoutes(prisma: PrismaClient): Router {
   // User management routes
   router.use('/users', createUserRoutes(prisma));
 
-  router.use('/projects', (req, res) => {
-    res.json({ message: 'Project management endpoints - Coming soon' });
-  });
+  // Project management routes
+  router.use('/projects', createProjectRoutes(prisma));
 
   router.use('/tracks', (req, res) => {
     res.json({ message: 'Track management endpoints - Coming soon' });

@@ -27,6 +27,7 @@
     "exactOptionalPropertyTypes": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "types": ["jest", "node"],
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
@@ -45,9 +46,7 @@
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "dist"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

@@ -11,11 +11,11 @@ describe('API Versioning Integration', () => {
       expect(response.body).toHaveProperty('error', 'Authentication required');
     });
 
-    it('should access projects endpoints via /api/v1/projects', async () => {
+    it('should require authentication for projects endpoints', async () => {
       const response = await request(app).get('/api/v1/projects');
       
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('message', 'Project management endpoints - Coming soon');
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty('error', 'Authentication required');
     });
 
     it('should return 404 for old unversioned endpoints', async () => {

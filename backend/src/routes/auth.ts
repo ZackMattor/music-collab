@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthController } from '../controllers/AuthController';
 import { 
@@ -52,7 +52,7 @@ export function createAuthRoutes(prisma: PrismaClient): Router {
    */
   router.get(
     '/profile',
-    authMiddleware(),
+    authMiddleware() as RequestHandler,
     authController.getProfile
   );
 
