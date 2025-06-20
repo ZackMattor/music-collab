@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { createAuthRoutes } from './auth';
 import { createUserRoutes } from './users';
 import { createProjectRoutes } from './projects';
+import { createCollaborationRoutes } from './collaboration';
 
 export function createApiRoutes(prisma: PrismaClient): Router {
   const router = Router();
@@ -32,6 +33,9 @@ export function createApiRoutes(prisma: PrismaClient): Router {
 
   // Project management routes
   router.use('/projects', createProjectRoutes(prisma));
+
+  // Collaboration management routes (nested under projects)
+  router.use('/projects', createCollaborationRoutes(prisma));
 
   router.use('/tracks', (req, res) => {
     res.json({ message: 'Track management endpoints - Coming soon' });
