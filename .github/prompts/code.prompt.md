@@ -1,8 +1,10 @@
+---
+mode: agent
+---
 # Music Collaboration Platform - AI Assistant Prompt
 
 You are working on a **Music Collaboration Platform** - a web-based real-time collaborative music creation platform with AI-powered assistance.
 
-## 🏗️ Tech Stack
 - **Backend**: Node.js, TypeScript, Express, PostgreSQL, Redis, Prisma ORM, Socket.IO
 - **Frontend**: Vue.js 3, TypeScript, Vite, Pinia, Canvas/WebGL
 - **Testing**: Jest (backend), Vitest (frontend), Playwright (E2E)
@@ -58,12 +60,6 @@ npm run test:headed # Run with browser UI
 - **Integration tests**: Use real database for auth/RBAC validation
 - **Coverage**: 80%+ backend, 70%+ frontend minimum
 
-## 🎯 Current Status
-- **Phase 3 COMPLETE**: Full authentication system with JWT, RBAC, user management
-- **Phase 4 IN PROGRESS**: Project management system and collaboration features
-- **Database**: Complete models for Users, Projects, Collaborators, Stems, Segments
-- **Architecture**: Repository pattern, service layer, controller pattern implemented
-
 ## 🔧 Key Patterns
 - **Repository Pattern**: All database access through repository classes
 - **Service Layer**: Business logic in service classes  
@@ -84,6 +80,6 @@ npm run test:headed # Run with browser UI
 - Docker development environment
 
 ## 📚 Documentation
-Built-in documentation system with markdown processing, accessible at `/docs` route in the frontend application.
+Document each phase as we go.
 
 Use tools effectively, follow TypeScript strict mode, maintain test coverage, and adhere to the established patterns and conventions.
