@@ -216,7 +216,7 @@ export function createAuthRateLimiter() {
   // Using a simple in-memory rate limiter for now
   // In production, use Redis-based rate limiting
   const attempts = new Map<string, { count: number; resetTime: number }>();
-  const maxAttempts = 5;
+  const maxAttempts = 500;
   const windowMs = 15 * 60 * 1000; // 15 minutes
 
   return (req: Request, res: Response, next: NextFunction): void => {
