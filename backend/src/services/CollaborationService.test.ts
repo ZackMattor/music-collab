@@ -1,5 +1,5 @@
 import { Role } from '@prisma/client';
-import { CollaborationService, CollaboratorInviteData, CollaboratorUpdateData } from './CollaborationService';
+import { CollaborationService, CollaboratorUpdateData } from './CollaborationService';
 import { CollaborationRepository } from '../repositories/CollaborationRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import { ProjectRepository } from '../repositories/ProjectRepository';
@@ -553,6 +553,7 @@ describe('CollaborationService', () => {
 
   describe('getDefaultPermissionsForRole', () => {
     it('should return correct permissions for VIEWER role', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const service = collaborationService as any;
       const permissions = service.getDefaultPermissionsForRole(Role.VIEWER);
 
@@ -566,6 +567,7 @@ describe('CollaborationService', () => {
     });
 
     it('should return correct permissions for CONTRIBUTOR role', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const service = collaborationService as any;
       const permissions = service.getDefaultPermissionsForRole(Role.CONTRIBUTOR);
 
@@ -579,6 +581,7 @@ describe('CollaborationService', () => {
     });
 
     it('should return correct permissions for ADMIN role', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const service = collaborationService as any;
       const permissions = service.getDefaultPermissionsForRole(Role.ADMIN);
 
@@ -601,6 +604,7 @@ describe('CollaborationService', () => {
         const ownerProject = { ...mockProject, ownerId: userId };
         mockProjectFindById.mockResolvedValue(ownerProject);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasProjectAccess(projectId, userId);
 
@@ -611,6 +615,7 @@ describe('CollaborationService', () => {
         mockProjectFindById.mockResolvedValue(mockProject);
         mockCollabFindByProjectAndUser.mockResolvedValue(mockCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasProjectAccess(projectId, userId);
 
@@ -620,6 +625,7 @@ describe('CollaborationService', () => {
       it('should return false when project not found', async () => {
         mockProjectFindById.mockResolvedValue(null);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasProjectAccess(projectId, userId);
 
@@ -630,6 +636,7 @@ describe('CollaborationService', () => {
         mockProjectFindById.mockResolvedValue(mockProject);
         mockCollabFindByProjectAndUser.mockResolvedValue(null);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasProjectAccess(projectId, userId);
 
@@ -642,6 +649,7 @@ describe('CollaborationService', () => {
         const ownerProject = { ...mockProject, ownerId: userId };
         mockProjectFindById.mockResolvedValue(ownerProject);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorInvitePermission(projectId, userId);
 
@@ -653,6 +661,7 @@ describe('CollaborationService', () => {
         const inviteCollaborator = { ...mockCollaborator, canInviteOthers: true };
         mockCollabFindByProjectAndUser.mockResolvedValue(inviteCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorInvitePermission(projectId, userId);
 
@@ -664,6 +673,7 @@ describe('CollaborationService', () => {
         const noInviteCollaborator = { ...mockCollaborator, canInviteOthers: false };
         mockCollabFindByProjectAndUser.mockResolvedValue(noInviteCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorInvitePermission(projectId, userId);
 
@@ -676,6 +686,7 @@ describe('CollaborationService', () => {
         const ownerProject = { ...mockProject, ownerId: userId };
         mockProjectFindById.mockResolvedValue(ownerProject);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorUpdatePermission(projectId, userId);
 
@@ -687,6 +698,7 @@ describe('CollaborationService', () => {
         const adminCollaborator = { ...mockCollaborator, role: Role.ADMIN };
         mockCollabFindByProjectAndUser.mockResolvedValue(adminCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorUpdatePermission(projectId, userId);
 
@@ -698,6 +710,7 @@ describe('CollaborationService', () => {
         const contributorCollaborator = { ...mockCollaborator, role: Role.CONTRIBUTOR };
         mockCollabFindByProjectAndUser.mockResolvedValue(contributorCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorUpdatePermission(projectId, userId);
 
@@ -710,6 +723,7 @@ describe('CollaborationService', () => {
         const ownerProject = { ...mockProject, ownerId: userId };
         mockProjectFindById.mockResolvedValue(ownerProject);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorRemovePermission(projectId, userId);
 
@@ -721,6 +735,7 @@ describe('CollaborationService', () => {
         const adminCollaborator = { ...mockCollaborator, role: Role.ADMIN };
         mockCollabFindByProjectAndUser.mockResolvedValue(adminCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorRemovePermission(projectId, userId);
 
@@ -732,6 +747,7 @@ describe('CollaborationService', () => {
         const contributorCollaborator = { ...mockCollaborator, role: Role.CONTRIBUTOR };
         mockCollabFindByProjectAndUser.mockResolvedValue(contributorCollaborator);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = collaborationService as any;
         const result = await service.hasCollaboratorRemovePermission(projectId, userId);
 
