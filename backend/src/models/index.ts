@@ -194,9 +194,26 @@ export interface SessionChange {
 // Content Type Definitions
 export interface MidiSegmentContent {
   type: 'midi';
-  // MIDI data as JSON (parsed from MIDI file)
-  tracks: MidiTrack[];
-  ticksPerQuarter: number;
+  // MIDI notes as structured data
+  notes: MidiNote[];
+  // Optional program/instrument selection
+  program?: number; // 0-127
+  bank?: number; // 0-16383
+  // Musical metadata
+  keySignature?: {
+    key: number; // -7 to 7 (C major = 0)
+    mode: 'major' | 'minor';
+  };
+  timeSignature?: {
+    numerator: number;
+    denominator: number;
+  };
+  // Additional metadata
+  metadata?: {
+    originalFileName?: string;
+    quantization?: number; // in milliseconds
+    swing?: number; // 0-100
+  };
 }
 
 export interface MidiTrack {
@@ -213,6 +230,15 @@ export interface MidiEvent {
   control?: number; // Control change number
   value?: number; // Control change value
   program?: number; // Program change number
+}
+
+export interface MidiNote {
+  id: string;
+  start: number; // milliseconds from segment start
+  duration: number; // milliseconds
+  pitch: number; // 0-127
+  velocity: number; // 0-127
+  channel?: number; // 0-15
 }
 
 export interface AudioSegmentContent {
