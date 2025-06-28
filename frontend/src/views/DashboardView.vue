@@ -24,7 +24,7 @@
         <p>Your creative journey starts here. Start a new project or collaborate with others.</p>
         
         <div class="quick-actions">
-          <button class="action-button primary">
+          <button @click="goToProjects" class="action-button primary">
             <span class="button-icon">🎹</span>
             New Project
           </button>
@@ -85,14 +85,23 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import UserProfile from '@/components/auth/UserProfile.vue'
+
+// Router
+const router = useRouter()
 
 // Store
 const authStore = useAuthStore()
 
 // State
 const showProfile = ref(false)
+
+// Methods
+const goToProjects = () => {
+  router.push('/projects')
+}
 
 // Computed
 const user = computed(() => authStore.currentUser)

@@ -1,5 +1,46 @@
 @import './base.css';
 
+:root {
+  /* Colors */
+  --primary-color: #6366f1;
+  --primary-color-dark: #4f46e5;
+  --secondary-color: #64748b;
+  --accent-color: #f59e0b;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --danger-color-dark: #dc2626;
+  
+  /* Background Colors */
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --hover-bg: #f8fafc;
+  --danger-bg: #fef2f2;
+  --warning-bg: #fefbf2;
+  --warning-border: #fbbf24;
+  
+  /* Text Colors */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  
+  /* Border Colors */
+  --border-color: #e2e8f0;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: #1e293b;
+    --input-bg: #334155;
+    --hover-bg: #334155;
+    --danger-bg: #450a0a;
+    --warning-bg: #451a03;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --border-color: #475569;
+  }
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;

@@ -41,6 +41,24 @@ const router = createRouter({
       beforeEnter: requireAuth
     },
     {
+      path: '/projects',
+      name: 'projects',
+      component: () => import('../views/ProjectsView.vue'),
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/projects/:id',
+      name: 'project-detail',
+      component: () => import('../views/ProjectDetailView.vue'),
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/projects/:id/settings',
+      name: 'project-settings',
+      component: () => import('../views/ProjectSettingsView.vue'),
+      beforeEnter: requireAuth
+    },
+    {
       path: '/docs',
       component: () => import('../views/DocsLayout.vue'),
       beforeEnter: optionalAuth,

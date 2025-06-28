@@ -57,7 +57,8 @@ npm run test:headed # Run with browser UI
 ## 🧪 Testing Standards
 - **Co-located tests**: Place `.test.ts` files adjacent to source files
 - **AAA Pattern**: Arrange, Act, Assert structure required
-- **Integration tests**: Use real database for auth/RBAC validation
+- **Unit tests**: Focus on functionality without external database calls
+- **Integration tests**: Don't create integration tests unless prompted
 - **Coverage**: 80%+ backend, 70%+ frontend minimum
 
 ## 🔧 Key Patterns

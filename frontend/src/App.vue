@@ -18,6 +18,7 @@
           <div class="auth-links">
             <template v-if="authStore.isAuthenticated">
               <RouterLink to="/dashboard" class="nav-link">Dashboard</RouterLink>
+              <RouterLink to="/projects" class="nav-link">Projects</RouterLink>
               <div class="user-menu">
                 <button @click="showUserMenu = !showUserMenu" class="user-button">
                   <img 

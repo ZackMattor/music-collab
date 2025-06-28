@@ -107,6 +107,14 @@ class ApiClient {
       }
 
       const data = await response.json()
+      
+      // Check if backend already returned data in ApiResponse format
+      if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+        // Backend already returned ApiResponse format, return as-is
+        return data
+      }
+      
+      // Backend returned raw data, wrap it in ApiResponse format
       return {
         success: true,
         data,
@@ -319,53 +327,22 @@ export const authApi = {
 
 export const projectsApi = {
   async getProjects(): Promise<ApiResponse<Project[]>> {
-    // TODO: Replace with actual API call when backend projects API is implemented
-    console.log('Mock get projects API call')
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    return {
-      success: true,
-      data: [
-        {
-          id: '1',
-          title: 'My First Song',
-          description: 'A test project for the music collaboration platform',
-          genre: 'Electronic',
-          tempo: 120,
-          keySignature: 'C Major',
-          timeSignature: '4/4',
-          ownerId: '1',
-          collaborators: [],
-          tracks: [],
-          status: 'active',
-          isPublic: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      ],
-      meta: {
-        timestamp: new Date().toISOString()
-      }
-    }
+    return apiClient.get<Project[]>('/projects')
   },
 
   async getProject(id: string): Promise<ApiResponse<Project>> {
-    // TODO: Replace with actual API call
     return apiClient.get<Project>(`/projects/${id}`)
   },
 
   async createProject(data: Partial<Project>): Promise<ApiResponse<Project>> {
-    // TODO: Replace with actual API call
     return apiClient.post<Project>('/projects', data)
   },
 
   async updateProject(id: string, data: Partial<Project>): Promise<ApiResponse<Project>> {
-    // TODO: Replace with actual API call
     return apiClient.put<Project>(`/projects/${id}`, data)
   },
 
   async deleteProject(id: string): Promise<ApiResponse<void>> {
-    // TODO: Replace with actual API call
     return apiClient.delete<void>(`/projects/${id}`)
   }
 }
